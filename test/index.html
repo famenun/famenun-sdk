@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./icon.png">
+    <title>Test</title>
+</head>
+
+<body>
+    <h1 style="color: #ff659a;">Test app</h1>
+    <br>
+    <input id="message" name="message" placeholder="Message" />
+    <br>
+    <br>
+    <button onclick="showToast()">show toast</button>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./sdk.js"></script>
+    <script>
+        const api = __famenun__.init("my_app_id");
+        console.log(api.appId);
+
+        function showToast() {
+            const message = document.getElementById("message").value;
+            setTimeout(async() => {
+                try {
+                    await api.toastHandler.showToast(message);
+                    console.log("Toast Shown");
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+    </script>
+</body>
+
+</html>
