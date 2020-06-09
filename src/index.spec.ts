@@ -4,7 +4,7 @@ import { CURRENCY_INR } from "./utils/PaymentHandler";
 describe("SDK", () => {
     it("initailse SDk", async () => {
 
-        const api = SDK.init("app_id");
+        const api = SDK.init("app_id", true);
 
         try {
             const profile: any = await api.profileHandler?.getProfile();
@@ -21,7 +21,12 @@ describe("SDK", () => {
         }
 
         try {
-            await api.paymentHandler?.makePayment("txn_id", CURRENCY_INR, 21, "aditya");
+            await api.paymentHandler?.makePayment({
+                id: "txn_id", 
+                cu: CURRENCY_INR, 
+                am: 21, 
+                re: "aditya"
+            });
             console.log("payment made");
         } catch (error) {
             console.log(error);
@@ -44,8 +49,28 @@ describe("SDK", () => {
         }
 
         try {
-            api.toastHandler?.showToast("This is a toast");
+            await api.toastHandler?.showToast("This is a toast");
             console.log("Toast made");
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            await api.databaseHandler?.insertData({
+                table: "feeds",
+                id: "first_entry",
+                value: "this is a test entry"
+            });
+            console.log("Data inserted");
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            const data = await  api.databaseHandler?.getData({
+                table: "feeds"
+            });
+            console.log(data);
         } catch (error) {
             console.log(error);
         }

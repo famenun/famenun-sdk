@@ -92,21 +92,23 @@
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const ProfileHandler_1 = __webpack_require__(1);
-const ToastHandler_1 = __webpack_require__(2);
+const ToastHandler_1 = __webpack_require__(3);
 const CircleHandler_1 = __webpack_require__(4);
 const PaymentHandler_1 = __webpack_require__(5);
 const PublishHandler_1 = __webpack_require__(6);
 const ChatroomHandler_1 = __webpack_require__(7);
+const DatabaseHandler_1 = __webpack_require__(8);
 exports.init = (id, debug) => {
     return {
         appId: id,
         debug: debug,
-        profileHandler: new ProfileHandler_1.ProfileHandler(),
-        circleHandler: new CircleHandler_1.CircleHandler(),
-        paymentHandler: new PaymentHandler_1.PaymentHandler(),
-        publishHandler: new PublishHandler_1.PublishHandler(),
-        chatroomHandler: new ChatroomHandler_1.ChatroomHandler(),
-        toastHandler: new ToastHandler_1.ToastHandler(debug)
+        profileHandler: new ProfileHandler_1.ProfileHandler(debug),
+        circleHandler: new CircleHandler_1.CircleHandler(debug),
+        paymentHandler: new PaymentHandler_1.PaymentHandler(debug),
+        publishHandler: new PublishHandler_1.PublishHandler(debug),
+        chatroomHandler: new ChatroomHandler_1.ChatroomHandler(debug),
+        toastHandler: new ToastHandler_1.ToastHandler(debug),
+        databaseHandler: new DatabaseHandler_1.DatabaseHandler(debug)
     };
 };
 (function () {
@@ -126,73 +128,46 @@ exports.init = (id, debug) => {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-class ProfileHandler {
-    getProfile() {
-        return new Promise((resolve, reject) => {
-            try {
-                setTimeout(() => {
-                    const num = Math.round(Math.random() * 100);
-                    if (num % 2 == 0) {
-                        resolve({
-                            "name": "Harkal",
-                            "city": "Udaipur"
-                        });
-                    }
-                    else {
-                        reject("Failed to get profile");
-                    }
-                }, 3000);
-            }
-            catch (error) {
-                reject(error);
-            }
-        });
-    }
-}
-exports.ProfileHandler = ProfileHandler;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jquery_1 = __importDefault(__webpack_require__(3));
-exports.API_TOAST = "https://apps.famenun.com/showToast";
-class ToastHandler {
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_GET_PROFILE = "https://apps.famenun.com/getProfile";
+class ProfileHandler {
     constructor(debug) {
         this.debug = debug;
     }
     /**
-    * Show a small toast message to user.
-    *
-    * @param message - The message you want to show to the user
-    *
+    * Get currently logged in user's Profile.
     */
-    showToast(message) {
+    getProfile() {
         return new Promise((resolve, reject) => {
             try {
                 if (this.debug) {
                     setTimeout(() => {
                         const num = Math.round(Math.random() * 100);
                         if (num % 2 == 0) {
-                            resolve();
+                            resolve({
+                                "id": "user_id",
+                                "na": "User Name",
+                                "dp": "https://thumbor.forbes.com/thumbor/fit-in/416x416/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F5c76b7d331358e35dd2773a9%2F0x0.jpg%3Fbackground%3D000000%26cropX1%3D0%26cropX2%3D4401%26cropY1%3D0%26cropY2%3D4401"
+                            });
                         }
                         else {
-                            reject("Failed to show toast");
+                            reject("Failed to get profile");
                         }
                     }, 3000);
                 }
                 else {
-                    jquery_1.default.get(exports.API_TOAST, { "message": message }).done((data) => {
+                    jquery_1.default.get(exports.API_GET_PROFILE, {}).done((data) => {
                         console.log(JSON.stringify(data));
-                        resolve();
+                        if (!data.error) {
+                            resolve(data.data);
+                        }
+                        else {
+                            reject(data.message);
+                        }
                     }).fail((error) => {
                         console.log(JSON.stringify(error));
                         reject(error);
@@ -205,11 +180,11 @@ class ToastHandler {
         });
     }
 }
-exports.ToastHandler = ToastHandler;
+exports.ProfileHandler = ProfileHandler;
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -11088,33 +11063,115 @@ return jQuery;
 
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_TOAST = "https://apps.famenun.com/showToast";
+class ToastHandler {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Show a small toast message to user.
+    *
+    * @param message - The message you want to show to the user
+    *
+    */
+    showToast(message) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to show toast");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_TOAST, { "message": message }).done((data) => {
+                        console.log(JSON.stringify(data));
+                        resolve();
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+}
+exports.ToastHandler = ToastHandler;
+
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_GET_CIRCLE = "https://apps.famenun.com/getCircle";
 class CircleHandler {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Show prompt to user to get his circle
+    */
     getCircle() {
         return new Promise((resolve, reject) => {
             try {
-                setTimeout(() => {
-                    const num = Math.round(Math.random() * 100);
-                    if (num % 2 == 0) {
-                        resolve({
-                            "name": "Best Friends",
-                            "people": [
-                                "Aditya",
-                                "Amit",
-                                "Marshal",
-                                "Tarun"
-                            ]
-                        });
-                    }
-                    else {
-                        reject("Failed to get circle");
-                    }
-                }, 3000);
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve({
+                                "name": "Best Friends",
+                                "people": [
+                                    "Aditya",
+                                    "Amit",
+                                    "Marshal",
+                                    "Tarun"
+                                ]
+                            });
+                        }
+                        else {
+                            reject("Failed to get circle");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_GET_CIRCLE, {}).done((data) => {
+                        console.log(JSON.stringify(data));
+                        if (!data.error) {
+                            resolve(data.data);
+                        }
+                        else {
+                            reject(data.message);
+                        }
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -11131,22 +11188,55 @@ exports.CircleHandler = CircleHandler;
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_OPEN_CHAT = "https://apps.famenun.com/openChat";
 exports.CURRENCY_INR = "INR";
 exports.CURRENCY_USD = "USD";
+class Payable {
+}
+exports.Payable = Payable;
 class PaymentHandler {
-    makePayment(txnId, txnCurrency, txnAmount, recipient) {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Show prompt to user to make payment
+    *
+    * @param payable - The object with payment data
+    *
+    */
+    makePayment(payable) {
         return new Promise((resolve, reject) => {
             try {
-                setTimeout(() => {
-                    const num = Math.round(Math.random() * 100);
-                    if (num % 2 == 0) {
-                        resolve();
-                    }
-                    else {
-                        reject("Failed to make payment");
-                    }
-                }, 3000);
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to make payment");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_OPEN_CHAT, JSON.parse(JSON.stringify(payable))).done((data) => {
+                        console.log(JSON.stringify(data));
+                        if (!data.error) {
+                            resolve();
+                        }
+                        else {
+                            reject(data.message);
+                        }
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -11163,24 +11253,54 @@ exports.PaymentHandler = PaymentHandler;
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_PUBLISH = "https://apps.famenun.com/publish";
 class Publishable {
 }
 exports.Publishable = Publishable;
 class PublishHandler {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Prompt user to publish @param publishable
+    *
+    * @param publishable - the Object with data that you want to publish
+    *
+    */
     publish(publishable) {
         return new Promise((resolve, reject) => {
             try {
-                setTimeout(() => {
-                    const num = Math.round(Math.random() * 100);
-                    if (num % 2 == 0) {
-                        console.log(publishable);
-                        resolve();
-                    }
-                    else {
-                        reject("Failed to pulish");
-                    }
-                }, 3000);
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            console.log(publishable);
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to pulish");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_PUBLISH, JSON.parse(JSON.stringify(publishable))).done((data) => {
+                        console.log(JSON.stringify(data));
+                        if (!data.error) {
+                            resolve();
+                        }
+                        else {
+                            reject(data.message);
+                        }
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -11197,21 +11317,51 @@ exports.PublishHandler = PublishHandler;
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_OPEN_CHAT = "https://apps.famenun.com/openChat";
 class ChatroomHandler {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Open Famenun chat with @param users
+    *
+    * @param users - The people with whom you want to open chat
+    *
+    */
     openChat(...users) {
         return new Promise((resolve, reject) => {
             try {
-                setTimeout(() => {
-                    const num = Math.round(Math.random() * 100);
-                    if (num % 2 == 0) {
-                        console.log(users);
-                        resolve();
-                    }
-                    else {
-                        reject("Failed to open chat");
-                    }
-                }, 3000);
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            console.log(users);
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to open chat");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_OPEN_CHAT, { "users": users }).done((data) => {
+                        console.log(JSON.stringify(data));
+                        if (!data.error) {
+                            resolve();
+                        }
+                        else {
+                            reject(data.message);
+                        }
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -11220,6 +11370,115 @@ class ChatroomHandler {
     }
 }
 exports.ChatroomHandler = ChatroomHandler;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_INSERT_DATA = "https://apps.famenun.com/insertData";
+exports.API_GET_DATA = "https://apps.famenun.com/getData";
+class Insertable {
+}
+exports.Insertable = Insertable;
+class DataQuery {
+}
+exports.DataQuery = DataQuery;
+class DataEntity {
+}
+exports.DataEntity = DataEntity;
+class DatabaseHandler {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Insert data into database
+    *
+    * @param table - Table to categorise your data, where the data is being kept
+    * @param id - unique identifier in tha table, if some value already exist that ll be overriden
+    * @param data - data that you want to keep
+    *
+    */
+    insertData(insertable) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to insert data");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_INSERT_DATA, JSON.parse(JSON.stringify(insertable)))
+                        .done((data) => {
+                        console.log(JSON.stringify(data));
+                        resolve();
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+    /**
+    * Get data from database
+    *
+    * @param table - Table to categorise your data, where the data is being kept
+    * @param id - unique identifier in tha table, if some value already exist that ll be overriden
+    *
+    */
+    getData(dataQuery) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve([{
+                                    id: "data_id",
+                                    value: "this is a test value in the database",
+                                    time: Date.now()
+                                }]);
+                        }
+                        else {
+                            reject("Failed to get data");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_GET_DATA, JSON.parse(JSON.stringify(dataQuery)))
+                        .done((data) => {
+                        console.log(JSON.stringify(data));
+                        resolve(data.data);
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+}
+exports.DatabaseHandler = DatabaseHandler;
 
 
 /***/ })

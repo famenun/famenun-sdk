@@ -4,6 +4,7 @@ import { PaymentHandler } from "../utils/PaymentHandler";
 import { CircleHandler } from "../utils/CircleHandler";
 import { PublishHandler } from "../utils/PublishHandler";
 import { ChatroomHandler } from "../utils/ChatroomHandler";
+import { DatabaseHandler } from "../utils/DatabaseHandler";
 export declare class FamenunApi {
     appId?: string;
     debug?: boolean;
@@ -13,4 +14,5 @@ export declare class FamenunApi {
     publishHandler?: PublishHandler;
     chatroomHandler?: ChatroomHandler;
     toastHandler?: ToastHandler;
+    databaseHandler?: DatabaseHandler;
 }

@@ -9,18 +9,73 @@
 </head>
 
 <body>
-    <h1 style="color: #ff659a;">Test app</h1>
+    <h1 style="color: #ff659a;">Toast Api Test</h1>
     <br>
     <input id="message" name="message" placeholder="Message" />
     <br>
     <br>
     <button onclick="showToast()">show toast</button>
+    <br>
+    <br>
+    <h1 style="color: #ff659a;">Profile Api Test</h1>
+    <br>
+    <img id="dp" style="width: 96px; height: 96px; object-fit: contain; border-radius: 50%; background: grey;" />
+    <span id="name"></span>
+    <br>
+    <br>
+    <button onclick="getProfile()">get profile</button>
+    <br>
+    <br>
+    <h1 style="color: #ff659a;">Circle Api Test</h1>
+    <br>
+    <button onclick="getCircle()">get circle</button>
+    <br>
+    <br>
+    <h1 style="color: #ff659a;">Chat Api Test</h1>
+    <br>
+    <button onclick="openChat()">open chat</button>
+    <br>
+    <br>
+    <h1 style="color: #ff659a;">Payment Api Test</h1>
+    <br>
+    <button onclick="makePayment()">make payment</button>
+    <br>
+    <br>
+    <h1 style="color: #ff659a;">Publish Api Test</h1>
+    <br>
+    <input type="file" id="file" name="file" accept="image/*">
+    <br>
+    <button onclick="publsh()">publish</button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div id="logs-container"></div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./sdk.js"></script>
     <script>
+        var uid = "aditya";
+        var files;
+
+        document.getElementById("file").onchange = function(event) {
+            files = event.target.files;
+        }
+
+        console.stdlog = console.log.bind(console);
+        console.logs = [];
+        console.log = function() {
+            console.logs.push(Array.from(arguments));
+            console.stdlog.apply(console, arguments);
+            var logStrings = "";
+            for (const log of console.logs) {
+                logStrings += `\n\n${log}`;
+            }
+            document.getElementById("logs-container").innerText = logStrings;
+        };
+
         const api = __famenun__.init("my_app_id");
-        console.log(api.appId);
+        console.log(api.appId, api.debug);
 
         function showToast() {
             const message = document.getElementById("message").value;
@@ -28,6 +83,72 @@
                 try {
                     await api.toastHandler.showToast(message);
                     console.log("Toast Shown");
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function getProfile() {
+            setTimeout(async() => {
+                try {
+                    const profile = await api.profileHandler.getProfile();
+                    console.log(`profile : ${JSON.stringify(profile)}`);
+                    uid = profile.id;
+                    document.getElementById("dp").setAttribute("src", profile.dp);
+                    document.getElementById("name").innerText = profile.na;
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function getCircle() {
+            setTimeout(async() => {
+                try {
+                    const circle = await api.circleHandler.getCircle();
+                    console.log(`circle : ${JSON.stringify(circle)}`);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function openChat() {
+            setTimeout(async() => {
+                try {
+                    await api.chatroomHandler.openChat(uid, uid);
+                    console.log(`chat opened :>`);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function makePayment() {
+            setTimeout(async() => {
+                try {
+                    await api.paymentHandler.makePayment({
+                        id: "txn_id",
+                        cu: "INR",
+                        am: 21,
+                        re: "aditya"
+                    });
+                    console.log(`payment done :>`);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function publsh() {
+            setTimeout(async() => {
+                try {
+                    await api.publishHandler.publish({
+                        "ab": "this is a test broadcast coming from an api",
+                        "fi": files
+                    });
+                    console.log(`broadcast done :>`);
                 } catch (error) {
                     console.log(error);
                 }
