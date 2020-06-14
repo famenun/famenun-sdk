@@ -1,8 +1,60 @@
 {
-    "id": "com.myapp.test",
-    "name": "Test App",
-    "icon": "./icon.png",
-    "entry": "./index.html",
+    /*version of the app release*/
     "version": "1.0.0",
-    "color": "#ff659a"
+    /*id of the app*/
+    "id": "com.example.app",
+    /*name of the app*/
+    "name": "Test App",
+    /*path of the app*/
+    "icon": "./icon.png",
+    /*path of the entry file*/
+    "entry": "./index.html",
+    /*theme color of the app shold have all the six color digits*/
+    "color": "#ff659a",
+    /*all the critical and non-critical permissions that the app has*/
+    "permissions": [
+        // hooks permissions
+        "PERMISSION_PUSH_IN_FEEDS",
+        "PERMISSION_PUSH_IN_EXPLORE",
+        "PERMISSION_PUSH_IN_NOTIFICATIONS",
+        "PERMISSION_PUSH_IN_CHATROOM",
+        "PERMISSION_PUSH_FEEDS",
+        "PERMISSION_PUSH_FEEDS",
+        // data permissions
+        "PERMISSION_ACCESS_USER_INFO",
+        "PERMISSION_ACCESS_USER_CIRCLES",
+        // other non-critical invoke permissions
+        "PERMISSION_INVOKE_PAYMENT_API",
+        "PERMISSION_INVOKE_PUBLISH_API",
+        "PERMISSION_INVOKE_CHATROOM_API",
+        "PERMISSION_INVOKE_PROFILE_API",
+        "PERMISSION_INVOKE_CIRCLE_API"
+    ],
+    /*incoming data handlers of the app like the links, files and other internal custom handlers*/
+    "handlers": [{
+            "id": "open_profile",
+            "path": "./profile.html",
+            "type": "custom"
+        },
+        {
+            "id": "link_handler",
+            "path": "./links.html",
+            "type": "links"
+        },
+        {
+            "id": "image_editor",
+            "path": "./edit.html",
+            "type": "image/*"
+        },
+        {
+            "id": "everything",
+            "path": "./index.html",
+            "type": "*"
+        }
+    ],
+    /*for hooking data in the famenun system like data in the feeds*/
+    "hooks": [{
+        "id": "feeds_hook",
+        "path": "./hooks/feeds_hook.js"
+    }]
 }

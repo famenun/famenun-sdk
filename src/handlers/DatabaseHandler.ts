@@ -4,25 +4,8 @@ export const API_INSERT_DATA = "https://apps.famenun.com/insertData";
 export const API_GET_DATA = "https://apps.famenun.com/getData";
 
 export class Insertable {
-    table?: string;
-    id?: string;
+    key?: string;
     value?: string;
-}
-
-export class DataQuery {
-    table!: string;
-    /**
-    * Can be 'ASC' or 'DESC'
-    */
-    order?: string;
-    offset?: string;
-    limit?: number;
-}
-
-export class DataEntity {
-    id?: string;
-    value?: string;
-    time?: number;
 }
 
 export class DatabaseHandler {
@@ -68,28 +51,25 @@ export class DatabaseHandler {
     /**
     * Get data from database
     *
-    * @param table - Table to categorise your data, where the data is being kept
-    * @param id - unique identifier in tha table, if some value already exist that ll be overriden
+    * @param key - unique identifier of the data being inserted earlier
     *
     */
-    getData(dataQuery: DataQuery): Promise<Array<DataEntity>> {
+    getData(key: string): Promise<string> {
         return new Promise((resolve, reject) => {
             try {
                 if (this.debug) {
                     setTimeout(() => {
                         const num = Math.round(Math.random() * 100);
                         if (num % 2 == 0) {
-                            resolve([{
-                                id: "data_id",
-                                value: "this is a test value in the database",
-                                time: Date.now()
-                            }]);
+                            resolve("this is a test value in the database");
                         } else {
                             reject("Failed to get data");
                         }
                     }, 3000);
                 } else {
-                    $.get(API_GET_DATA, JSON.parse(JSON.stringify(dataQuery)))
+                    $.get(API_GET_DATA, {
+                        "key": key
+                    })
                         .done((data: any) => {
                             console.log(JSON.stringify(data));
                             resolve(data.data);

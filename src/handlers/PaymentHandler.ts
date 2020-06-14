@@ -1,40 +1,41 @@
 import $ from "jquery";
 
-export const API_PUBLISH = "https://apps.famenun.com/publish";
+export const API_MAKE_PAYMENT = "https://apps.famenun.com/makePayment";
+export const CURRENCY_INR = "INR";
+export const CURRENCY_USD = "USD";
 
-export class Publishable {
-    ab?: string;
-    fi?: Array<any>;
-    mo?: number; 
-    ve?: any;
-    pr?: boolean;
+export class Payable {
+    id?: string;
+    cu?: string;
+    am?: number;
+    re?: string;
+    su?: string; // the subject of the payment
 }
 
-export class PublishHandler {
-
+export class PaymentHandler {
+    
     constructor(public debug?: boolean) { }
 
     /**
-    * Prompt user to publish @param publishable
+    * Show prompt to user to make payment
     *
-    * @param publishable - the Object with data that you want to publish
+    * @param payable - The object with payment data
     *
     */
-    publish(publishable: Publishable): Promise<void> {
+    makePayment(payable: Payable): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.debug){
                     setTimeout(() => {
                         const num = Math.round(Math.random() * 100);
                         if(num % 2 == 0){
-                            console.log(publishable);
                             resolve();
                         }else{
-                            reject("Failed to pulish");
+                            reject("Failed to make payment");
                         }
                     }, 3000);
                 }else{
-                    $.get(API_PUBLISH, JSON.parse(JSON.stringify(publishable))).done((data: any) => {
+                    $.get(API_MAKE_PAYMENT, JSON.parse(JSON.stringify(payable))).done((data: any) => {
                         console.log(JSON.stringify(data));
                         if(!data.error){
                             resolve();
@@ -51,5 +52,5 @@ export class PublishHandler {
             }
         });
     }
-    
+
 }

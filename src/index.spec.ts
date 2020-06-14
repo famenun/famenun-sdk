@@ -1,5 +1,5 @@
 import * as SDK from "./index";
-import { CURRENCY_INR } from "./utils/PaymentHandler";
+import { CURRENCY_INR } from "./handlers/PaymentHandler";
 
 describe("SDK", () => {
     it("initailse SDk", async () => {
@@ -14,8 +14,30 @@ describe("SDK", () => {
         }
 
         try {
+            await api.profileHandler?.createShortcut({
+                dp: "https://famenun.com/dp.png",
+                na: "About me",
+                pa: "./aboutme.html?user={uid}"
+            });
+            console.log("shortcut created");
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
             const circle: any = await api.circleHandler?.getCircle();
             console.log(circle);
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            await api.hookHandler?.registerHook({
+                id: "feeds_hook",
+                pa: "./feeds.hook.js",
+                do: "feeds"
+            });
+            console.log("hook registered");
         } catch (error) {
             console.log(error);
         }
@@ -25,7 +47,8 @@ describe("SDK", () => {
                 id: "txn_id", 
                 cu: CURRENCY_INR, 
                 am: 21, 
-                re: "aditya"
+                re: "aditya",
+                su: "buy shots premium"
             });
             console.log("payment made");
         } catch (error) {
@@ -57,8 +80,7 @@ describe("SDK", () => {
 
         try {
             await api.databaseHandler?.insertData({
-                table: "feeds",
-                id: "first_entry",
+                key: "first_entry",
                 value: "this is a test entry"
             });
             console.log("Data inserted");
@@ -67,9 +89,7 @@ describe("SDK", () => {
         }
 
         try {
-            const data = await  api.databaseHandler?.getData({
-                table: "feeds"
-            });
+            const data = await api.databaseHandler?.getData("first_entry");
             console.log(data);
         } catch (error) {
             console.log(error);

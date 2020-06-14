@@ -1,27 +1,24 @@
 import $ from "jquery";
 
-export const API_OPEN_CHAT = "https://apps.famenun.com/openChat";
-export const CURRENCY_INR = "INR";
-export const CURRENCY_USD = "USD";
+export const API_REGISTER_HOOK = "https://apps.famenun.com/registerHook";
 
-export class Payable {
-    id?: string;
-    cu?: string;
-    am?: number;
-    re?: string;
+export class Hookable {
+    id?: string; // unique identifier of the hook
+    pa?: string; // path of the hook js file relative to manifest file
+    do?: string; // domain of the hook which can be feeds, explore, notifications, chatroom, profile
 }
 
-export class PaymentHandler {
-    
+export class HookHandler {
+
     constructor(public debug?: boolean) { }
 
     /**
-    * Show prompt to user to make payment
+    * Register a hook to push data later int heir respective domains
     *
-    * @param payable - The object with payment data
+    * @param hookable - the hook you want to register
     *
     */
-    makePayment(payable: Payable): Promise<void> {
+    registerHook(hookable: Hookable): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.debug){
@@ -30,23 +27,19 @@ export class PaymentHandler {
                         if(num % 2 == 0){
                             resolve();
                         }else{
-                            reject("Failed to make payment");
+                            reject("Failed to register hook");
                         }
                     }, 3000);
                 }else{
-                    $.get(API_OPEN_CHAT, JSON.parse(JSON.stringify(payable))).done((data: any) => {
+                    $.get(API_REGISTER_HOOK, JSON.parse(JSON.stringify(hookable))).done((data: any) => {
                         console.log(JSON.stringify(data));
-                        if(!data.error){
-                            resolve();
-                        }else{
-                            reject(data.message);
-                        }
+                        resolve();
                     }).fail((error: any) => {
                         console.log(JSON.stringify(error));
                         reject(error);
                     });
                 }
-            }catch(error){
+            } catch (error) {
                 reject(error);
             }
         });

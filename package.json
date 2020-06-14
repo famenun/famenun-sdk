@@ -19,7 +19,6 @@
         "lib"
     ],
     "dependencies": {
-        "@famenun/app": "^1.0.0",
         "@types/jquery": "^3.3.38",
         "jquery": "^3.5.1"
     },

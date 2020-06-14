@@ -90,6 +90,15 @@
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const ProfileHandler_1 = __webpack_require__(1);
 const ToastHandler_1 = __webpack_require__(3);
@@ -98,12 +107,18 @@ const PaymentHandler_1 = __webpack_require__(5);
 const PublishHandler_1 = __webpack_require__(6);
 const ChatroomHandler_1 = __webpack_require__(7);
 const DatabaseHandler_1 = __webpack_require__(8);
+const HookHandler_1 = __webpack_require__(9);
+const Utility_1 = __webpack_require__(10);
+class FamenunApi {
+}
+exports.FamenunApi = FamenunApi;
 exports.init = (id, debug) => {
     return {
         appId: id,
         debug: debug,
         profileHandler: new ProfileHandler_1.ProfileHandler(debug),
         circleHandler: new CircleHandler_1.CircleHandler(debug),
+        hookHandler: new HookHandler_1.HookHandler(debug),
         paymentHandler: new PaymentHandler_1.PaymentHandler(debug),
         publishHandler: new PublishHandler_1.PublishHandler(debug),
         chatroomHandler: new ChatroomHandler_1.ChatroomHandler(debug),
@@ -115,7 +130,20 @@ exports.init = (id, debug) => {
     try {
         var win = window;
         win.__famenun__ = {
-            init: exports.init
+            init: exports.init,
+            download: (requestId, blobUrls) => {
+                setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                    const promises = new Array();
+                    for (const blobUrl of blobUrls) {
+                        promises.push(Utility_1.blobUrlToBase64(blobUrl));
+                    }
+                    const result = yield Promise.all(promises);
+                    console.log(JSON.stringify({
+                        id: requestId,
+                        result: result
+                    }));
+                }), 0);
+            }
         };
     }
     catch (e) { }
@@ -134,6 +162,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const jquery_1 = __importDefault(__webpack_require__(2));
 exports.API_GET_PROFILE = "https://apps.famenun.com/getProfile";
+exports.API_CREATE_SHORTCUT = "https://apps.famenun.com/createShortcut";
+class ProfileShortcut {
+}
+exports.ProfileShortcut = ProfileShortcut;
 class ProfileHandler {
     constructor(debug) {
         this.debug = debug;
@@ -161,6 +193,43 @@ class ProfileHandler {
                 }
                 else {
                     jquery_1.default.get(exports.API_GET_PROFILE, {}).done((data) => {
+                        console.log(JSON.stringify(data));
+                        if (!data.error) {
+                            resolve(data.data);
+                        }
+                        else {
+                            reject(data.message);
+                        }
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+    /**
+    * Create shortcut in profile
+    */
+    createShortcut(profileShortcut) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to create shortcut");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_CREATE_SHORTCUT, JSON.parse(JSON.stringify(profileShortcut))).done((data) => {
                         console.log(JSON.stringify(data));
                         if (!data.error) {
                             resolve(data.data);
@@ -11193,7 +11262,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jquery_1 = __importDefault(__webpack_require__(2));
-exports.API_OPEN_CHAT = "https://apps.famenun.com/openChat";
+exports.API_MAKE_PAYMENT = "https://apps.famenun.com/makePayment";
 exports.CURRENCY_INR = "INR";
 exports.CURRENCY_USD = "USD";
 class Payable {
@@ -11224,7 +11293,7 @@ class PaymentHandler {
                     }, 3000);
                 }
                 else {
-                    jquery_1.default.get(exports.API_OPEN_CHAT, JSON.parse(JSON.stringify(payable))).done((data) => {
+                    jquery_1.default.get(exports.API_MAKE_PAYMENT, JSON.parse(JSON.stringify(payable))).done((data) => {
                         console.log(JSON.stringify(data));
                         if (!data.error) {
                             resolve();
@@ -11275,6 +11344,7 @@ class PublishHandler {
     publish(publishable) {
         return new Promise((resolve, reject) => {
             try {
+                console.log(JSON.stringify(publishable));
                 if (this.debug) {
                     setTimeout(() => {
                         const num = Math.round(Math.random() * 100);
@@ -11388,12 +11458,6 @@ exports.API_GET_DATA = "https://apps.famenun.com/getData";
 class Insertable {
 }
 exports.Insertable = Insertable;
-class DataQuery {
-}
-exports.DataQuery = DataQuery;
-class DataEntity {
-}
-exports.DataEntity = DataEntity;
 class DatabaseHandler {
     constructor(debug) {
         this.debug = debug;
@@ -11439,22 +11503,17 @@ class DatabaseHandler {
     /**
     * Get data from database
     *
-    * @param table - Table to categorise your data, where the data is being kept
-    * @param id - unique identifier in tha table, if some value already exist that ll be overriden
+    * @param key - unique identifier of the data being inserted earlier
     *
     */
-    getData(dataQuery) {
+    getData(key) {
         return new Promise((resolve, reject) => {
             try {
                 if (this.debug) {
                     setTimeout(() => {
                         const num = Math.round(Math.random() * 100);
                         if (num % 2 == 0) {
-                            resolve([{
-                                    id: "data_id",
-                                    value: "this is a test value in the database",
-                                    time: Date.now()
-                                }]);
+                            resolve("this is a test value in the database");
                         }
                         else {
                             reject("Failed to get data");
@@ -11462,7 +11521,9 @@ class DatabaseHandler {
                     }, 3000);
                 }
                 else {
-                    jquery_1.default.get(exports.API_GET_DATA, JSON.parse(JSON.stringify(dataQuery)))
+                    jquery_1.default.get(exports.API_GET_DATA, {
+                        "key": key
+                    })
                         .done((data) => {
                         console.log(JSON.stringify(data));
                         resolve(data.data);
@@ -11479,6 +11540,118 @@ class DatabaseHandler {
     }
 }
 exports.DatabaseHandler = DatabaseHandler;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_REGISTER_HOOK = "https://apps.famenun.com/registerHook";
+class Hookable {
+}
+exports.Hookable = Hookable;
+class HookHandler {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Register a hook to push data later int heir respective domains
+    *
+    * @param hookable - the hook you want to register
+    *
+    */
+    registerHook(hookable) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to register hook");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_REGISTER_HOOK, JSON.parse(JSON.stringify(hookable))).done((data) => {
+                        console.log(JSON.stringify(data));
+                        resolve();
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+}
+exports.HookHandler = HookHandler;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.mapFromObject = (object) => {
+    const map = new Map();
+    if (object !== undefined) {
+        for (const key in object) {
+            if (object.hasOwnProperty(key)) {
+                map.set(key, object[key]);
+            }
+            ;
+        }
+    }
+    return map;
+};
+exports.objectFromMap = (map) => {
+    const object = {};
+    map.forEach((value, key) => {
+        object[key] = value;
+    });
+    return object;
+};
+exports.blobUrlToBase64 = (blobUrl) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const request = new XMLHttpRequest();
+            request.open('GET', blobUrl, true);
+            request.responseType = 'blob';
+            request.onload = function () {
+                const reader = new FileReader();
+                reader.readAsDataURL(request.response);
+                reader.onerror = (error) => {
+                    reject(error);
+                };
+                reader.onload = (event) => {
+                    resolve({
+                        url: blobUrl,
+                        base64: event.target.result
+                    });
+                };
+            };
+            request.send();
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+};
 
 
 /***/ })

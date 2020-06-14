@@ -26,9 +26,18 @@
     <button onclick="getProfile()">get profile</button>
     <br>
     <br>
+    <br>
+    <button onclick="createProfileShortcut()">create profile shortcut</button>
+    <br>
+    <br>
     <h1 style="color: #ff659a;">Circle Api Test</h1>
     <br>
     <button onclick="getCircle()">get circle</button>
+    <br>
+    <br>
+    <h1 style="color: #ff659a;">Hooks Api</h1>
+    <br>
+    <button onclick="registerHook()">Register Hook</button>
     <br>
     <br>
     <h1 style="color: #ff659a;">Chat Api Test</h1>
@@ -43,23 +52,43 @@
     <br>
     <h1 style="color: #ff659a;">Publish Api Test</h1>
     <br>
+    <img id="image" style="max-width: 300px; max-height: 300px; object-fit: contain;" />
+    <br>
     <input type="file" id="file" name="file" accept="image/*">
     <br>
     <button onclick="publsh()">publish</button>
     <br>
     <br>
+    <h1 style="color: #ff659a;">Insert Data</h1>
+    <br>
+    <button onclick="insertData()">insert data</button>
     <br>
     <br>
+    <h1 style="color: #ff659a;">Get Data</h1>
+    <br>
+    <button onclick="getData()">get Data</button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h1 style="color: #006eff;">Logs</h1>
     <div id="logs-container"></div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./sdk.js"></script>
     <script>
         var uid = "aditya";
-        var files;
+        var files = [];
 
         document.getElementById("file").onchange = function(event) {
-            files = event.target.files;
+            for (const file of event.target.files) {
+                const url = URL.createObjectURL(file);
+                console.log(url);
+                document.getElementById("image").setAttribute("src", url);
+                files.push(url);
+            }
+            console.log("files selected : " + files);
         }
 
         console.stdlog = console.log.bind(console);
@@ -103,11 +132,41 @@
             }, 0);
         }
 
+        function createProfileShortcut() {
+            setTimeout(async() => {
+                try {
+                    await api.profileHandler.createShortcut({
+                        dp: files[0],
+                        na: "Test",
+                        pa: "./test.html?user={uid}"
+                    });
+                    console.log("profile shortcut created")
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
         function getCircle() {
             setTimeout(async() => {
                 try {
                     const circle = await api.circleHandler.getCircle();
                     console.log(`circle : ${JSON.stringify(circle)}`);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function registerHook() {
+            setTimeout(async() => {
+                try {
+                    await api.hookHandler.registerHook({
+                        id: "feeds_hook",
+                        pa: "./feeds.hook.js",
+                        do: "feeds"
+                    });
+                    console.log("Hook registered");
                 } catch (error) {
                     console.log(error);
                 }
@@ -149,6 +208,31 @@
                         "fi": files
                     });
                     console.log(`broadcast done :>`);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function insertData() {
+            setTimeout(async() => {
+                try {
+                    await api.databaseHandler.insertData({
+                        key: "first_entry",
+                        value: "this is a test entry"
+                    });
+                    console.log(`data inserted :>`);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function getData() {
+            setTimeout(async() => {
+                try {
+                    const data = await api.databaseHandler.getData("first_entry");
+                    console.log(data);
                 } catch (error) {
                     console.log(error);
                 }

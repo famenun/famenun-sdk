@@ -1,11 +1,29 @@
-import { ProfileHandler } from "./utils/ProfileHandler";
-import { ToastHandler } from "./utils/ToastHandler";
-import { FamenunApi } from "./models/FamenunApi";
-import { CircleHandler } from "./utils/CircleHandler";
-import { PaymentHandler } from "./utils/PaymentHandler";
-import { PublishHandler } from "./utils/PublishHandler";
-import { ChatroomHandler } from "./utils/ChatroomHandler";
-import { DatabaseHandler } from "./utils/DatabaseHandler";
+import { ProfileHandler } from "./handlers/ProfileHandler";
+import { ToastHandler } from "./handlers/ToastHandler";
+import { CircleHandler } from "./handlers/CircleHandler";
+import { PaymentHandler } from "./handlers/PaymentHandler";
+import { PublishHandler } from "./handlers/PublishHandler";
+import { ChatroomHandler } from "./handlers/ChatroomHandler";
+import { DatabaseHandler } from "./handlers/DatabaseHandler";
+import { HookHandler } from "./handlers/HookHandler";
+import { blobUrlToBase64 } from "./utils/Utility";
+
+export class FamenunApi {
+    appId?: string;
+    debug?: boolean;
+
+    profileHandler?: ProfileHandler;
+    circleHandler?: CircleHandler;
+
+    hookHandler?: HookHandler;
+
+    paymentHandler?: PaymentHandler;
+    publishHandler?: PublishHandler;
+    chatroomHandler?: ChatroomHandler;
+
+    toastHandler?: ToastHandler;
+    databaseHandler?: DatabaseHandler
+}
 
 export const init = (id: string, debug?: boolean): FamenunApi => {
     return {
@@ -14,6 +32,8 @@ export const init = (id: string, debug?: boolean): FamenunApi => {
 
         profileHandler: new ProfileHandler(debug),
         circleHandler: new CircleHandler(debug),
+
+        hookHandler: new HookHandler(debug),
 
         paymentHandler: new PaymentHandler(debug),
         publishHandler: new PublishHandler(debug),
@@ -29,7 +49,20 @@ export const init = (id: string, debug?: boolean): FamenunApi => {
     try {
         var win: any = window;
         win.__famenun__ = {
-            init: init
+            init: init,
+            download: (requestId: string, blobUrls: Array<string>) => {
+                setTimeout(async () => {
+                    const promises = new Array();
+                    for(const blobUrl of blobUrls){
+                        promises.push(blobUrlToBase64(blobUrl));
+                    }
+                    const result = await Promise.all(promises);
+                    console.log(JSON.stringify({
+                        id: requestId,
+                        result: result
+                    }));
+                }, 0);
+            }
         };
-    }catch(e){ }
+    } catch (e) { }
 })();
