@@ -5,8 +5,17 @@ import { PaymentHandler } from "./handlers/PaymentHandler";
 import { PublishHandler } from "./handlers/PublishHandler";
 import { ChatroomHandler } from "./handlers/ChatroomHandler";
 import { DatabaseHandler } from "./handlers/DatabaseHandler";
-import { HookHandler } from "./handlers/HookHandler";
+import { LinkHandler } from "./handlers/LinkHandler";
 import { blobUrlToBase64 } from "./utils/Utility";
+import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
+import { NotificationHandler } from "./handlers/NotificationHandler";
+
+export class Emitable {
+    error?: boolean;
+    message?: string;
+    type?: string;
+    data?: any;
+}
 
 export class FamenunApi {
     appId?: string;
@@ -15,14 +24,15 @@ export class FamenunApi {
     profileHandler?: ProfileHandler;
     circleHandler?: CircleHandler;
 
-    hookHandler?: HookHandler;
-
     paymentHandler?: PaymentHandler;
     publishHandler?: PublishHandler;
     chatroomHandler?: ChatroomHandler;
+    appGalaxyHandler?: AppGalaxyHandler;
 
     toastHandler?: ToastHandler;
     databaseHandler?: DatabaseHandler
+    linkHandler?: LinkHandler;
+    notificationHandler?: NotificationHandler;
 }
 
 export const init = (id: string, debug?: boolean): FamenunApi => {
@@ -33,15 +43,15 @@ export const init = (id: string, debug?: boolean): FamenunApi => {
         profileHandler: new ProfileHandler(debug),
         circleHandler: new CircleHandler(debug),
 
-        hookHandler: new HookHandler(debug),
-
         paymentHandler: new PaymentHandler(debug),
         publishHandler: new PublishHandler(debug),
         chatroomHandler: new ChatroomHandler(debug),
+        appGalaxyHandler: new AppGalaxyHandler(debug),
 
         toastHandler: new ToastHandler(debug),
-
-        databaseHandler: new DatabaseHandler(debug)
+        databaseHandler: new DatabaseHandler(debug),
+        linkHandler: new LinkHandler(debug),
+        notificationHandler: new NotificationHandler(debug)
     };
 }
 
@@ -62,6 +72,14 @@ export const init = (id: string, debug?: boolean): FamenunApi => {
                         result: result
                     }));
                 }, 0);
+            },
+            emit: (emitable: Emitable) => {
+                console.log(JSON.stringify(emitable));
+            },
+            registerHook: (code: string) => {
+                var script = document.createElement("script");
+                script.innerHTML = decodeURIComponent(code);
+                document.body.append(script);
             }
         };
     } catch (e) { }

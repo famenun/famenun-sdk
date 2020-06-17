@@ -35,9 +35,13 @@
     <button onclick="getCircle()">get circle</button>
     <br>
     <br>
-    <h1 style="color: #ff659a;">Hooks Api</h1>
+    <h1 style="color: #ff659a;">App Galaxy Api Test</h1>
     <br>
-    <button onclick="registerHook()">Register Hook</button>
+    <button onclick="getInstalledApps()">get installed apps</button>
+    <br>
+    <button onclick="openApp()">open app</button>
+    <br>
+    <button onclick="openAppProfile()">open app profile</button>
     <br>
     <br>
     <h1 style="color: #ff659a;">Chat Api Test</h1>
@@ -67,6 +71,16 @@
     <h1 style="color: #ff659a;">Get Data</h1>
     <br>
     <button onclick="getData()">get Data</button>
+    <br>
+    <br>
+    <h1 style="color: #ff659a;">Links Api</h1>
+    <br>
+    <button onclick="openLink()">Open Link</button>
+    <br>
+    <br>
+    <h1 style="color: #ff659a;">Notification Api</h1>
+    <br>
+    <button onclick="notify()">notify</button>
     <br>
     <br>
     <br>
@@ -158,26 +172,44 @@
             }, 0);
         }
 
-        function registerHook() {
+        function openChat() {
             setTimeout(async() => {
                 try {
-                    await api.hookHandler.registerHook({
-                        id: "feeds_hook",
-                        pa: "./feeds.hook.js",
-                        do: "feeds"
-                    });
-                    console.log("Hook registered");
+                    await api.chatroomHandler.openChat(uid, uid);
+                    console.log(`chat opened :>`);
                 } catch (error) {
                     console.log(error);
                 }
             }, 0);
         }
 
-        function openChat() {
+        function getInstalledApps() {
             setTimeout(async() => {
                 try {
-                    await api.chatroomHandler.openChat(uid, uid);
-                    console.log(`chat opened :>`);
+                    const apps = await api.appGalaxyHandler.getInstalledApps();
+                    console.log(JSON.stringify(apps));
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function openApp() {
+            setTimeout(async() => {
+                try {
+                    await api.appGalaxyHandler.openApp("test_app");
+                    console.log("app opened");
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function openAppProfile() {
+            setTimeout(async() => {
+                try {
+                    await api.appGalaxyHandler.openAppProfile("test_app");
+                    console.log("app profile opened");
                 } catch (error) {
                     console.log(error);
                 }
@@ -203,10 +235,7 @@
         function publsh() {
             setTimeout(async() => {
                 try {
-                    await api.publishHandler.publish({
-                        "ab": "this is a test broadcast coming from an api",
-                        "fi": files
-                    });
+                    await api.publishHandler.publish(files);
                     console.log(`broadcast done :>`);
                 } catch (error) {
                     console.log(error);
@@ -233,6 +262,31 @@
                 try {
                     const data = await api.databaseHandler.getData("first_entry");
                     console.log(data);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function openLink() {
+            setTimeout(async() => {
+                try {
+                    await api.linkHandler.openLink("https://legal.famenun.com/policies");
+                    console.log("link opened");
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function notify() {
+            setTimeout(async() => {
+                try {
+                    await api.notificationHandler.notify({
+                        title: "this is notification title",
+                        image: "https://thumbor.forbes.com/thumbor/fit-in/416x416/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F5c76b7d331358e35dd2773a9%2F0x0.jpg%3Fbackground%3D000000%26cropX1%3D0%26cropX2%3D4401%26cropY1%3D0%26cropY2%3D4401"
+                    });
+                    console.log("notified");
                 } catch (error) {
                     console.log(error);
                 }

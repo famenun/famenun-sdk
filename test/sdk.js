@@ -107,8 +107,13 @@ const PaymentHandler_1 = __webpack_require__(5);
 const PublishHandler_1 = __webpack_require__(6);
 const ChatroomHandler_1 = __webpack_require__(7);
 const DatabaseHandler_1 = __webpack_require__(8);
-const HookHandler_1 = __webpack_require__(9);
+const LinkHandler_1 = __webpack_require__(9);
 const Utility_1 = __webpack_require__(10);
+const AppGalaxyHandler_1 = __webpack_require__(11);
+const NotificationHandler_1 = __webpack_require__(12);
+class Emitable {
+}
+exports.Emitable = Emitable;
 class FamenunApi {
 }
 exports.FamenunApi = FamenunApi;
@@ -118,12 +123,14 @@ exports.init = (id, debug) => {
         debug: debug,
         profileHandler: new ProfileHandler_1.ProfileHandler(debug),
         circleHandler: new CircleHandler_1.CircleHandler(debug),
-        hookHandler: new HookHandler_1.HookHandler(debug),
         paymentHandler: new PaymentHandler_1.PaymentHandler(debug),
         publishHandler: new PublishHandler_1.PublishHandler(debug),
         chatroomHandler: new ChatroomHandler_1.ChatroomHandler(debug),
+        appGalaxyHandler: new AppGalaxyHandler_1.AppGalaxyHandler(debug),
         toastHandler: new ToastHandler_1.ToastHandler(debug),
-        databaseHandler: new DatabaseHandler_1.DatabaseHandler(debug)
+        databaseHandler: new DatabaseHandler_1.DatabaseHandler(debug),
+        linkHandler: new LinkHandler_1.LinkHandler(debug),
+        notificationHandler: new NotificationHandler_1.NotificationHandler(debug)
     };
 };
 (function () {
@@ -143,6 +150,14 @@ exports.init = (id, debug) => {
                         result: result
                     }));
                 }), 0);
+            },
+            emit: (emitable) => {
+                console.log(JSON.stringify(emitable));
+            },
+            registerHook: (code) => {
+                var script = document.createElement("script");
+                script.innerHTML = code;
+                document.body.append(script);
             }
         };
     }
@@ -11328,28 +11343,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const jquery_1 = __importDefault(__webpack_require__(2));
 exports.API_PUBLISH = "https://apps.famenun.com/publish";
-class Publishable {
-}
-exports.Publishable = Publishable;
 class PublishHandler {
     constructor(debug) {
         this.debug = debug;
     }
     /**
-    * Prompt user to publish @param publishable
+    * Prompt user to publish broadcast
     *
-    * @param publishable - the Object with data that you want to publish
+    * @param files - files to be published
     *
     */
-    publish(publishable) {
+    publish(files) {
         return new Promise((resolve, reject) => {
             try {
-                console.log(JSON.stringify(publishable));
+                console.log(JSON.stringify(files));
                 if (this.debug) {
                     setTimeout(() => {
                         const num = Math.round(Math.random() * 100);
                         if (num % 2 == 0) {
-                            console.log(publishable);
+                            console.log(files);
                             resolve();
                         }
                         else {
@@ -11358,7 +11370,9 @@ class PublishHandler {
                     }, 3000);
                 }
                 else {
-                    jquery_1.default.get(exports.API_PUBLISH, JSON.parse(JSON.stringify(publishable))).done((data) => {
+                    jquery_1.default.get(exports.API_PUBLISH, {
+                        files: files
+                    }).done((data) => {
                         console.log(JSON.stringify(data));
                         if (!data.error) {
                             resolve();
@@ -11553,21 +11567,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jquery_1 = __importDefault(__webpack_require__(2));
-exports.API_REGISTER_HOOK = "https://apps.famenun.com/registerHook";
-class Hookable {
-}
-exports.Hookable = Hookable;
-class HookHandler {
+exports.API_OPEN_LINK = "https://apps.famenun.com/openLink";
+class LinkHandler {
     constructor(debug) {
         this.debug = debug;
     }
     /**
-    * Register a hook to push data later int heir respective domains
+    * Open link in browser
     *
-    * @param hookable - the hook you want to register
+    * @param link - the link to be opened
     *
     */
-    registerHook(hookable) {
+    openLink(link) {
         return new Promise((resolve, reject) => {
             try {
                 if (this.debug) {
@@ -11577,12 +11588,14 @@ class HookHandler {
                             resolve();
                         }
                         else {
-                            reject("Failed to register hook");
+                            reject("Failed to open link");
                         }
                     }, 3000);
                 }
                 else {
-                    jquery_1.default.get(exports.API_REGISTER_HOOK, JSON.parse(JSON.stringify(hookable))).done((data) => {
+                    jquery_1.default.get(exports.API_OPEN_LINK, {
+                        link: encodeURIComponent(link)
+                    }).done((data) => {
                         console.log(JSON.stringify(data));
                         resolve();
                     }).fail((error) => {
@@ -11597,7 +11610,7 @@ class HookHandler {
         });
     }
 }
-exports.HookHandler = HookHandler;
+exports.LinkHandler = LinkHandler;
 
 
 /***/ }),
@@ -11652,6 +11665,191 @@ exports.blobUrlToBase64 = (blobUrl) => {
         }
     });
 };
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_GET_INSTALLED_APPS = "https://apps.famenun.com/getInstalledApps";
+exports.API_OPEN_APP = "https://apps.famenun.com/openApp";
+exports.API_OPEN_APP_PROFILE = "https://apps.famenun.com/openAppProfile";
+class AppGalaxyHandler {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Get All Installed Apps of the user
+    */
+    getInstalledApps() {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve([{
+                                    "id": "app01",
+                                    "name": "App One"
+                                }]);
+                        }
+                        else {
+                            reject("Failed to get apps");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_GET_INSTALLED_APPS, {}).done((data) => {
+                        console.log(JSON.stringify(data));
+                        resolve();
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+    /**
+    * Open app
+    * @param app is the id of the app to be opened
+    */
+    openApp(app) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to open app");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_OPEN_APP, {
+                        app: app
+                    }).done((data) => {
+                        console.log(JSON.stringify(data));
+                        resolve();
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+    /**
+    * Open app profile in app galaxy
+    * @param app is the id of the app
+    */
+    openAppProfile(app) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to open app profile");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_OPEN_APP_PROFILE, {
+                        app: app
+                    }).done((data) => {
+                        console.log(JSON.stringify(data));
+                        resolve();
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+}
+exports.AppGalaxyHandler = AppGalaxyHandler;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jquery_1 = __importDefault(__webpack_require__(2));
+exports.API_NOTIFY = "https://apps.famenun.com/notify";
+class Notifiable {
+}
+exports.Notifiable = Notifiable;
+class NotificationHandler {
+    constructor(debug) {
+        this.debug = debug;
+    }
+    /**
+    * Open link in browser
+    *
+    * @param notifiable - object containing notification data
+    *
+    */
+    notify(notifiable) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.debug) {
+                    setTimeout(() => {
+                        const num = Math.round(Math.random() * 100);
+                        if (num % 2 == 0) {
+                            resolve();
+                        }
+                        else {
+                            reject("Failed to notify");
+                        }
+                    }, 3000);
+                }
+                else {
+                    jquery_1.default.get(exports.API_NOTIFY, JSON.parse(JSON.stringify(notifiable))).done((data) => {
+                        console.log(JSON.stringify(data));
+                        resolve();
+                    }).fail((error) => {
+                        console.log(JSON.stringify(error));
+                        reject(error);
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+}
+exports.NotificationHandler = NotificationHandler;
 
 
 /***/ })

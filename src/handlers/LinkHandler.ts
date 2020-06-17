@@ -1,24 +1,18 @@
 import $ from "jquery";
 
-export const API_REGISTER_HOOK = "https://apps.famenun.com/registerHook";
+export const API_OPEN_LINK = "https://apps.famenun.com/openLink";
 
-export class Hookable {
-    id?: string; // unique identifier of the hook
-    pa?: string; // path of the hook js file relative to manifest file
-    do?: string; // domain of the hook which can be feeds, explore, notifications, chatroom, profile
-}
-
-export class HookHandler {
+export class LinkHandler {
 
     constructor(public debug?: boolean) { }
 
     /**
-    * Register a hook to push data later int heir respective domains
+    * Open link in browser
     *
-    * @param hookable - the hook you want to register
+    * @param link - the link to be opened
     *
     */
-    registerHook(hookable: Hookable): Promise<void> {
+    openLink(link: string): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.debug){
@@ -27,11 +21,13 @@ export class HookHandler {
                         if(num % 2 == 0){
                             resolve();
                         }else{
-                            reject("Failed to register hook");
+                            reject("Failed to open link");
                         }
                     }, 3000);
                 }else{
-                    $.get(API_REGISTER_HOOK, JSON.parse(JSON.stringify(hookable))).done((data: any) => {
+                    $.get(API_OPEN_LINK, {
+                        link: encodeURIComponent(link)
+                    }).done((data: any) => {
                         console.log(JSON.stringify(data));
                         resolve();
                     }).fail((error: any) => {

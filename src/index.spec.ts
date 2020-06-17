@@ -32,17 +32,6 @@ describe("SDK", () => {
         }
 
         try {
-            await api.hookHandler?.registerHook({
-                id: "feeds_hook",
-                pa: "./feeds.hook.js",
-                do: "feeds"
-            });
-            console.log("hook registered");
-        } catch (error) {
-            console.log(error);
-        }
-
-        try {
             await api.paymentHandler?.makePayment({
                 id: "txn_id", 
                 cu: CURRENCY_INR, 
@@ -56,9 +45,7 @@ describe("SDK", () => {
         }
 
         try {
-            await api.publishHandler?.publish({
-                "ab": "this is a test broadcast"
-            });
+            await api.publishHandler?.publish(["file://some/file/path"]);
             console.log("broadcast made");
         } catch (error) {
             console.log(error);
@@ -67,6 +54,27 @@ describe("SDK", () => {
         try {
             await api.chatroomHandler?.openChat("Aditya", "Amit");
             console.log("chat opened");
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            const apps: any = await api.appGalaxyHandler?.getInstalledApps();
+            console.log(apps);
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            await api.appGalaxyHandler?.openApp("test_app");
+            console.log("app opened");
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            await api.appGalaxyHandler?.openAppProfile("test_app");
+            console.log("app profile opened");
         } catch (error) {
             console.log(error);
         }
@@ -91,6 +99,23 @@ describe("SDK", () => {
         try {
             const data = await api.databaseHandler?.getData("first_entry");
             console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            await api.linkHandler?.openLink("https://legal.famenun.com/policies");
+            console.log("link opened");
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            await api.notificationHandler?.notify({
+                title: "this is notification title",
+                image: "https://thumbor.forbes.com/thumbor/fit-in/416x416/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F5c76b7d331358e35dd2773a9%2F0x0.jpg%3Fbackground%3D000000%26cropX1%3D0%26cropX2%3D4401%26cropY1%3D0%26cropY2%3D4401"
+            });
+            console.log("notified");
         } catch (error) {
             console.log(error);
         }
