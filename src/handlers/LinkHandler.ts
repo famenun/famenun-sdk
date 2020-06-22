@@ -1,10 +1,8 @@
-import $ from "jquery";
-
-export const API_OPEN_LINK = "https://apps.famenun.com/openLink";
+import { RequestHandler, Requestable, API_OPEN_LINK } from "./RequestHandler";
 
 export class LinkHandler {
 
-    constructor(public debug?: boolean) { }
+    constructor(public requestHandler?: RequestHandler) { }
 
     /**
     * Open link in browser
@@ -15,30 +13,25 @@ export class LinkHandler {
     openLink(link: string): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                if(this.debug){
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if(num % 2 == 0){
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_OPEN_LINK,
+                    data: {
+                        link: link
+                    }
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
                             resolve();
                         }else{
-                            reject("Failed to open link");
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                }else{
-                    $.get(API_OPEN_LINK, {
-                        link: encodeURIComponent(link)
-                    }).done((data: any) => {
-                        console.log(JSON.stringify(data));
-                        resolve();
-                    }).fail((error: any) => {
-                        console.log(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
         });
     }
-
+    
 }

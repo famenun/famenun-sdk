@@ -1,7 +1,4 @@
-import $ from "jquery";
-
-export const API_INSERT_DATA = "https://apps.famenun.com/insertData";
-export const API_GET_DATA = "https://apps.famenun.com/getData";
+import { RequestHandler, API_INSERT_DATA, Requestable, API_GET_DATA } from "./RequestHandler";
 
 export class Insertable {
     key?: string;
@@ -10,44 +7,36 @@ export class Insertable {
 
 export class DatabaseHandler {
 
-    constructor(public debug?: boolean) { }
+    constructor(public requestHandler?: RequestHandler) { }
 
     /**
     * Insert data into database
     *
-    * @param table - Table to categorise your data, where the data is being kept
-    * @param id - unique identifier in tha table, if some value already exist that ll be overriden
-    * @param data - data that you want to keep
+    * @param insertable - object having data to be saved
     *
     */
     insertData(insertable: Insertable): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                if (this.debug) {
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if (num % 2 == 0) {
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_INSERT_DATA,
+                    data: insertable
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
                             resolve();
-                        } else {
-                            reject("Failed to insert data");
+                        }else{
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                } else {
-                    $.get(API_INSERT_DATA, JSON.parse(JSON.stringify(insertable)))
-                        .done((data: any) => {
-                            console.log(JSON.stringify(data));
-                            resolve();
-                        }).fail((error: any) => {
-                            console.log(JSON.stringify(error));
-                            reject(error);
-                        });
-                }
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
         });
     }
-
+    
     /**
     * Get data from database
     *
@@ -57,31 +46,25 @@ export class DatabaseHandler {
     getData(key: string): Promise<string> {
         return new Promise((resolve, reject) => {
             try {
-                if (this.debug) {
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if (num % 2 == 0) {
-                            resolve("this is a test value in the database");
-                        } else {
-                            reject("Failed to get data");
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_GET_DATA,
+                    data: {
+                        key: key
+                    }
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
+                            resolve(requestable.data);
+                        }else{
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                } else {
-                    $.get(API_GET_DATA, {
-                        "key": key
-                    })
-                        .done((data: any) => {
-                            console.log(JSON.stringify(data));
-                            resolve(data.data);
-                        }).fail((error: any) => {
-                            console.log(JSON.stringify(error));
-                            reject(error);
-                        });
-                }
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
         });
     }
-
+    
 }

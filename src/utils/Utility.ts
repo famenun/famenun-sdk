@@ -34,10 +34,7 @@ export const blobUrlToBase64 = (blobUrl: string): Promise<any> => {
                     reject(error);
                 };
                 reader.onload = (event: any) => {
-                    resolve({
-                        url: blobUrl,
-                        base64: event.target.result
-                    });
+                    resolve(event.target.result);
                 };
             };
             request.send();

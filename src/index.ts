@@ -6,9 +6,9 @@ import { PublishHandler } from "./handlers/PublishHandler";
 import { ChatroomHandler } from "./handlers/ChatroomHandler";
 import { DatabaseHandler } from "./handlers/DatabaseHandler";
 import { LinkHandler } from "./handlers/LinkHandler";
-import { blobUrlToBase64 } from "./utils/Utility";
 import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
 import { NotificationHandler } from "./handlers/NotificationHandler";
+import { RequestHandler } from "./handlers/RequestHandler";
 
 export class Emitable {
     error?: boolean;
@@ -36,22 +36,23 @@ export class FamenunApi {
 }
 
 export const init = (id: string, debug?: boolean): FamenunApi => {
+    const requestHandler: RequestHandler = new RequestHandler(debug);
     return {
         appId: id,
         debug: debug,
 
-        profileHandler: new ProfileHandler(debug),
-        circleHandler: new CircleHandler(debug),
+        profileHandler: new ProfileHandler(requestHandler),
+        circleHandler: new CircleHandler(requestHandler),
 
-        paymentHandler: new PaymentHandler(debug),
-        publishHandler: new PublishHandler(debug),
-        chatroomHandler: new ChatroomHandler(debug),
-        appGalaxyHandler: new AppGalaxyHandler(debug),
+        paymentHandler: new PaymentHandler(requestHandler),
+        publishHandler: new PublishHandler(requestHandler),
+        chatroomHandler: new ChatroomHandler(requestHandler),
+        appGalaxyHandler: new AppGalaxyHandler(requestHandler),
 
-        toastHandler: new ToastHandler(debug),
-        databaseHandler: new DatabaseHandler(debug),
-        linkHandler: new LinkHandler(debug),
-        notificationHandler: new NotificationHandler(debug)
+        toastHandler: new ToastHandler(requestHandler),
+        databaseHandler: new DatabaseHandler(requestHandler),
+        linkHandler: new LinkHandler(requestHandler),
+        notificationHandler: new NotificationHandler(requestHandler)
     };
 }
 
@@ -60,19 +61,6 @@ export const init = (id: string, debug?: boolean): FamenunApi => {
         var win: any = window;
         win.__famenun__ = {
             init: init,
-            download: (requestId: string, blobUrls: Array<string>) => {
-                setTimeout(async () => {
-                    const promises = new Array();
-                    for(const blobUrl of blobUrls){
-                        promises.push(blobUrlToBase64(blobUrl));
-                    }
-                    const result = await Promise.all(promises);
-                    console.log(JSON.stringify({
-                        id: requestId,
-                        result: result
-                    }));
-                }, 0);
-            },
             emit: (emitable: Emitable) => {
                 console.log(JSON.stringify(emitable));
             },
@@ -80,6 +68,10 @@ export const init = (id: string, debug?: boolean): FamenunApi => {
                 var script = document.createElement("script");
                 script.innerHTML = decodeURIComponent(code);
                 document.body.append(script);
+            },
+            logListeners: [],
+            onLog: (listener: any) => {
+                win.__famenun__.logListeners.push(listener);
             }
         };
     } catch (e) { }

@@ -1,10 +1,9 @@
-import $ from "jquery";
-
-export const API_PUBLISH = "https://apps.famenun.com/publish";
+import { RequestHandler, Requestable, API_PUBLISH } from "./RequestHandler";
+import { blobUrlToBase64 } from "../utils/Utility";
 
 export class PublishHandler {
 
-    constructor(public debug?: boolean) { }
+    constructor(public requestHandler?: RequestHandler) { }
 
     /**
     * Prompt user to publish broadcast
@@ -13,38 +12,32 @@ export class PublishHandler {
     *
     */
     publish(files: Array<string>): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                console.log(JSON.stringify(files));
-                if (this.debug) {
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if (num % 2 == 0) {
-                            console.log(files);
-                            resolve();
-                        } else {
-                            reject("Failed to pulish");
-                        }
-                    }, 3000);
-                } else {
-                    $.get(API_PUBLISH, {
-                        files: files
-                    }).done((data: any) => {
-                        console.log(JSON.stringify(data));
-                        if (!data.error) {
-                            resolve();
-                        } else {
-                            reject(data.message);
-                        }
-                    }).fail((error: any) => {
-                        console.log(JSON.stringify(error));
-                        reject(error);
-                    });
+                const promises = new Array();
+                for(const file of files){
+                    promises.push(blobUrlToBase64(file));
                 }
+                const result = await Promise.all(promises);
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_PUBLISH,
+                    data: {
+                        files: result
+                    }
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
+                            resolve();
+                        }else{
+                            reject(requestable.message);
+                        }
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
         });
     }
-
+    
 }

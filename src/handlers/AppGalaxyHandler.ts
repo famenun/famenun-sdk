@@ -1,12 +1,8 @@
-import $ from "jquery";
-
-export const API_GET_INSTALLED_APPS = "https://apps.famenun.com/getInstalledApps";
-export const API_OPEN_APP = "https://apps.famenun.com/openApp";
-export const API_OPEN_APP_PROFILE = "https://apps.famenun.com/openAppProfile";
+import { RequestHandler, API_GET_INSTALLED_APPS, Requestable, API_OPEN_APP, API_OPEN_APP_PROFILE } from "./RequestHandler";
 
 export class AppGalaxyHandler {
 
-    constructor(public debug?: boolean) { }
+    constructor(public requestHandler?: RequestHandler) { }
 
     /**
     * Get All Installed Apps of the user
@@ -14,33 +10,24 @@ export class AppGalaxyHandler {
     getInstalledApps(): Promise<Array<any>> {
         return new Promise((resolve, reject) => {
             try {
-                if(this.debug){
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if(num % 2 == 0){
-                            resolve([{
-                                "id": "app01",
-                                "name": "App One"
-                            }]);
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_GET_INSTALLED_APPS
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
+                            resolve(requestable.data);
                         }else{
-                            reject("Failed to get apps");
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                }else{
-                    $.get(API_GET_INSTALLED_APPS, {}).done((data: any) => {
-                        console.log(JSON.stringify(data));
-                        resolve();
-                    }).fail((error: any) => {
-                        console.log(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
         });
     }
-
+    
     /**
     * Open app
     * @param app is the id of the app to be opened
@@ -48,32 +35,27 @@ export class AppGalaxyHandler {
     openApp(app: string): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                if(this.debug){
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if(num % 2 == 0){
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_OPEN_APP,
+                    data: {
+                        app: app
+                    }
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
                             resolve();
                         }else{
-                            reject("Failed to open app");
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                }else{
-                    $.get(API_OPEN_APP, {
-                        app: app
-                    }).done((data: any) => {
-                        console.log(JSON.stringify(data));
-                        resolve();
-                    }).fail((error: any) => {
-                        console.log(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
         });
     }
-
+    
     /**
     * Open app profile in app galaxy
     * @param app is the id of the app
@@ -81,30 +63,25 @@ export class AppGalaxyHandler {
     openAppProfile(app: string): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                if(this.debug){
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if(num % 2 == 0){
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_OPEN_APP_PROFILE,
+                    data: {
+                        app: app
+                    }
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
                             resolve();
                         }else{
-                            reject("Failed to open app profile");
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                }else{
-                    $.get(API_OPEN_APP_PROFILE, {
-                        app: app
-                    }).done((data: any) => {
-                        console.log(JSON.stringify(data));
-                        resolve();
-                    }).fail((error: any) => {
-                        console.log(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
         });
     }
-
+    
 }

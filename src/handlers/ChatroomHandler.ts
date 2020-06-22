@@ -1,10 +1,8 @@
-import $ from "jquery";
-
-export const API_OPEN_CHAT = "https://apps.famenun.com/openChat";
+import { RequestHandler, Requestable, API_OPEN_CHAT } from "./RequestHandler";
 
 export class ChatroomHandler {
     
-    constructor(public debug?: boolean) { }
+    constructor(public requestHandler?: RequestHandler) { }
 
     /**
     * Open Famenun chat with @param users
@@ -15,33 +13,23 @@ export class ChatroomHandler {
     openChat(...users: Array<string>): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                if(this.debug){
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if(num % 2 == 0){
-                            console.log(users);
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_OPEN_CHAT,
+                    data: users
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
                             resolve();
                         }else{
-                            reject("Failed to open chat");
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                }else{
-                    $.get(API_OPEN_CHAT, { "users": users }).done((data: any) => {
-                        console.log(JSON.stringify(data));
-                        if(!data.error){
-                            resolve();
-                        }else{
-                            reject(data.message);
-                        }
-                    }).fail((error: any) => {
-                        console.log(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
+                    }
+                });
             }catch(error){
                 reject(error);
             }
         });
     }
-
+    
 }

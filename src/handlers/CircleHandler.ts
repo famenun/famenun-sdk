@@ -1,10 +1,8 @@
-import $ from "jquery";
-
-export const API_GET_CIRCLE = "https://apps.famenun.com/getCircle";
+import { RequestHandler, Requestable, API_GET_CIRCLE } from "./RequestHandler";
 
 export class CircleHandler {
     
-    constructor(public debug?: boolean) { }
+    constructor(public requestHandler?: RequestHandler) { }
 
     /**
     * Show prompt to user to get his circle
@@ -12,36 +10,18 @@ export class CircleHandler {
     getCircle(): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
-                if(this.debug){
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if(num % 2 == 0){
-                            resolve({
-                                "name": "Best Friends",
-                                "people": [
-                                    "Aditya",
-                                    "Amit",
-                                    "Marshal",
-                                    "Tarun"
-                                ]
-                            });
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_GET_CIRCLE
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
+                            resolve(requestable.data);
                         }else{
-                            reject("Failed to get circle");
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                }else{
-                    $.get(API_GET_CIRCLE, {}).done((data: any) => {
-                        console.log(JSON.stringify(data));
-                        if(!data.error){
-                            resolve(data.data);
-                        }else{
-                            reject(data.message);
-                        }
-                    }).fail((error: any) => {
-                        console.log(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
+                    }
+                });
             }catch(error){
                 reject(error);
             }

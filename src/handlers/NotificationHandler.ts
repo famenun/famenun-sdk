@@ -1,6 +1,4 @@
-import $ from "jquery";
-
-export const API_NOTIFY = "https://apps.famenun.com/notify";
+import { RequestHandler, Requestable, API_NOTIFY } from "./RequestHandler";
 
 export class Notifiable {
     title?: string;
@@ -11,7 +9,7 @@ export class Notifiable {
 
 export class NotificationHandler {
 
-    constructor(public debug?: boolean) { }
+    constructor(public requestHandler?: RequestHandler) { }
 
     /**
     * Open link in browser
@@ -22,28 +20,23 @@ export class NotificationHandler {
     notify(notifiable: Notifiable): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                if(this.debug){
-                    setTimeout(() => {
-                        const num = Math.round(Math.random() * 100);
-                        if(num % 2 == 0){
+                this.requestHandler?.request({
+                    id: "request_id",
+                    api: API_NOTIFY,
+                    data: notifiable
+                }, {
+                    onComplete(requestable: Requestable): void {
+                        if(!requestable.error){
                             resolve();
                         }else{
-                            reject("Failed to notify");
+                            reject(requestable.message);
                         }
-                    }, 3000);
-                }else{
-                    $.get(API_NOTIFY, JSON.parse(JSON.stringify(notifiable))).done((data: any) => {
-                        console.log(JSON.stringify(data));
-                        resolve();
-                    }).fail((error: any) => {
-                        console.log(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
         });
     }
-
+    
 }
