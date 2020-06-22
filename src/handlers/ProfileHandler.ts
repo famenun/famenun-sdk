@@ -20,18 +20,26 @@ export class ProfileHandler {
     getProfile(): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
-                this.requestHandler?.request({
-                    id: "request_id",
-                    api: API_GET_PROFILE
-                }, {
-                    onComplete(requestable: Requestable): void {
-                        if(!requestable.error){
-                            resolve(requestable.data);
-                        }else{
-                            reject(requestable.message);
+                if(this.requestHandler?.debug){
+                    resolve({
+                        "id": "user_uid",
+                        "dp": "user_dp",
+                        "na": "user name"
+                    });
+                }else{
+                    this.requestHandler?.request({
+                        id: "request_id",
+                        api: API_GET_PROFILE
+                    }, {
+                        onComplete(requestable: Requestable): void {
+                            if(!requestable.error){
+                                resolve(requestable.data);
+                            }else{
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }catch(error){
                 reject(error);
             }
@@ -44,20 +52,24 @@ export class ProfileHandler {
     createShortcut(profileShortcut: ProfileShortcut): Promise<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                profileShortcut.dp = await blobUrlToBase64(profileShortcut.dp);
-                this.requestHandler?.request({
-                    id: "request_id",
-                    api: API_CREATE_SHORTCUT,
-                    data: profileShortcut
-                }, {
-                    onComplete(requestable: Requestable): void {
-                        if(!requestable.error){
-                            resolve();
-                        }else{
-                            reject(requestable.message);
+                if(this.requestHandler?.debug){
+                    resolve();
+                }else{
+                    profileShortcut.dp = await blobUrlToBase64(profileShortcut.dp);
+                    this.requestHandler?.request({
+                        id: "request_id",
+                        api: API_CREATE_SHORTCUT,
+                        data: profileShortcut
+                    }, {
+                        onComplete(requestable: Requestable): void {
+                            if(!requestable.error){
+                                resolve();
+                            }else{
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }catch(error){
                 reject(error);
             }

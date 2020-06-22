@@ -46,7 +46,9 @@ export class RequestHandler {
     private listeners: Map<string, OnRequestCompleteListener> = new Map();
 
     constructor(public debug?: boolean, ) {
-        this.initConsole(this, console, window);
+        if(this.debug !== true){
+            this.initConsole(this, console, window);
+        }
     }
 
     private initConsole(self: any, console: any, window: any): void {

@@ -10,18 +10,25 @@ export class CircleHandler {
     getCircle(): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
-                this.requestHandler?.request({
-                    id: "request_id",
-                    api: API_GET_CIRCLE
-                }, {
-                    onComplete(requestable: Requestable): void {
-                        if(!requestable.error){
-                            resolve(requestable.data);
-                        }else{
-                            reject(requestable.message);
+                if(this.requestHandler?.debug){
+                    resolve([
+                        "friend_uid_01",
+                        "friend_uid_02"
+                    ]);
+                }else{
+                    this.requestHandler?.request({
+                        id: "request_id",
+                        api: API_GET_CIRCLE
+                    }, {
+                        onComplete(requestable: Requestable): void {
+                            if(!requestable.error){
+                                resolve(requestable.data);
+                            }else{
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }catch(error){
                 reject(error);
             }
