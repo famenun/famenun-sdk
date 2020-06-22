@@ -18,10 +18,7 @@
     "files": [
         "lib"
     ],
-    "dependencies": {
-        "@types/jquery": "^3.3.38",
-        "jquery": "^3.5.1"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@types/mocha": "^7.0.2",
         "@types/node": "^12.12.5",
