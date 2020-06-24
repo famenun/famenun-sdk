@@ -111,30 +111,20 @@
             console.log("files selected : " + files);
         }
 
-        __famenun__.logListeners.push((message) => {
-            var oldLogs = document.getElementById("logs-container").innerText;
-            var newLogs = `${oldLogs}\n\n${message}`;
-            document.getElementById("logs-container").innerText = newLogs;
-        });
-
-        // console.stdlog = console.log.bind(console);
-        // console.logs = [];
-        // console.log = function() {
-        //     console.logs.push(Array.from(arguments));
-        //     console.stdlog.apply(console, arguments);
-        //     var logStrings = "";
-        //     for (const log of console.logs) {
-        //         logStrings += `\n\n${log}`;
-        //     }
-        //     document.getElementById("logs-container").innerText = logStrings;
-        // };
+        console.stdlog = console.log.bind(console);
+        console.logs = [];
+        console.log = function() {
+            console.logs.push(Array.from(arguments));
+            console.stdlog.apply(console, arguments);
+            var logStrings = "";
+            for (const log of console.logs) {
+                logStrings += `\n\n${log}`;
+            }
+            document.getElementById("logs-container").innerText = logStrings;
+        };
 
         const api = __famenun__.init("my_app_id", true);
         console.log(api.appId, api.debug);
-
-        __famenun__.logListeners.push((message) => {
-            document.getElementById("logs-container").innerText = message;
-        });
 
         function showToast() {
             const message = document.getElementById("message").value;

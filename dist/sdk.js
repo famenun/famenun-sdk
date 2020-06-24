@@ -137,10 +137,6 @@ exports.init = (id, debug) => {
                 var script = document.createElement("script");
                 script.innerHTML = decodeURIComponent(code);
                 document.body.append(script);
-            },
-            logListeners: [],
-            onLog: (listener) => {
-                win.__famenun__.logListeners.push(listener);
             }
         };
     }
@@ -178,21 +174,30 @@ class ProfileHandler {
     */
     getProfile() {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_GET_PROFILE
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve(requestable.data);
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve({
+                        "id": "user_uid",
+                        "dp": "user_dp",
+                        "na": "user name"
+                    });
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_GET_PROFILE
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                        else {
-                            reject(requestable.message);
-                        }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -204,23 +209,28 @@ class ProfileHandler {
     */
     createShortcut(profileShortcut) {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+            var _a, _b;
             try {
-                profileShortcut.dp = yield Utility_1.blobUrlToBase64(profileShortcut.dp);
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_CREATE_SHORTCUT,
-                    data: profileShortcut
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    profileShortcut.dp = yield Utility_1.blobUrlToBase64(profileShortcut.dp);
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_CREATE_SHORTCUT,
+                        data: profileShortcut
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                        else {
-                            reject(requestable.message);
-                        }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -273,20 +283,15 @@ class RequestHandler {
     constructor(debug) {
         this.debug = debug;
         this.listeners = new Map();
-        this.initConsole(this, console, window);
+        this.initConsole(this, console);
     }
-    initConsole(self, console, window) {
-        console.stdlog = console.log.bind(console);
-        console.logs = [];
+    initConsole(self, console) {
+        console._f_log_ = console.log.bind(console);
+        console._f_logs_ = [];
         console.log = function () {
-            console.logs.push(Array.from(arguments));
-            console.stdlog.apply(console, arguments);
-            const log = console.logs[console.logs.length - 1];
-            if (window.__famenun__ !== undefined) {
-                for (const logListener of window.__famenun__.logListeners) {
-                    logListener(log);
-                }
-            }
+            console._f_logs_.push(Array.from(arguments));
+            console._f_log_.apply(console, arguments);
+            const log = console._f_logs_[console._f_logs_.length - 1];
             try {
                 const requestable = JSON.parse(log);
                 if (requestable.id !== undefined &&
@@ -399,24 +404,29 @@ class ToastHandler {
     */
     showToast(message) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_SHOW_TOAST,
-                    data: {
-                        message: message
-                    }
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_SHOW_TOAST,
+                        data: {
+                            message: message
                         }
-                        else {
-                            reject(requestable.message);
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -444,21 +454,29 @@ class CircleHandler {
     */
     getCircle() {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_GET_CIRCLE
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve(requestable.data);
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve([
+                        "friend_uid_01",
+                        "friend_uid_02"
+                    ]);
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_GET_CIRCLE
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                        else {
-                            reject(requestable.message);
-                        }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -494,22 +512,27 @@ class PaymentHandler {
     */
     makePayment(payable) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_MAKE_PAYMENT,
-                    data: payable
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_MAKE_PAYMENT,
+                        data: payable
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                        else {
-                            reject(requestable.message);
-                        }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -550,29 +573,34 @@ class PublishHandler {
     */
     publish(files) {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+            var _a, _b;
             try {
-                const promises = new Array();
-                for (const file of files) {
-                    promises.push(Utility_1.blobUrlToBase64(file));
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
                 }
-                const result = yield Promise.all(promises);
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_PUBLISH,
-                    data: {
-                        files: result
+                else {
+                    const promises = new Array();
+                    for (const file of files) {
+                        promises.push(Utility_1.blobUrlToBase64(file));
                     }
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                    const result = yield Promise.all(promises);
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_PUBLISH,
+                        data: {
+                            files: result
                         }
-                        else {
-                            reject(requestable.message);
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -603,22 +631,27 @@ class ChatroomHandler {
     */
     openChat(...users) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_OPEN_CHAT,
-                    data: users
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_OPEN_CHAT,
+                        data: users
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                        else {
-                            reject(requestable.message);
-                        }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -647,29 +680,32 @@ class DatabaseHandler {
     /**
     * Insert data into database
     *
-    * @param table - Table to categorise your data, where the data is being kept
-    * @param id - unique identifier in tha table, if some value already exist that ll be overriden
-    * @param data - data that you want to keep
+    * @param insertable - object having data to be saved
     *
     */
     insertData(insertable) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_INSERT_DATA,
-                    data: insertable
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_INSERT_DATA,
+                        data: insertable
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                        else {
-                            reject(requestable.message);
-                        }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -684,24 +720,29 @@ class DatabaseHandler {
     */
     getData(key) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_GET_DATA,
-                    data: {
-                        key: key
-                    }
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve(requestable.data);
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve(`value of the key : ${key}`);
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_GET_DATA,
+                        data: {
+                            key: key
                         }
-                        else {
-                            reject(requestable.message);
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -732,24 +773,29 @@ class LinkHandler {
     */
     openLink(link) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_OPEN_LINK,
-                    data: {
-                        link: link
-                    }
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_OPEN_LINK,
+                        data: {
+                            link: link
                         }
-                        else {
-                            reject(requestable.message);
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -777,21 +823,32 @@ class AppGalaxyHandler {
     */
     getInstalledApps() {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_GET_INSTALLED_APPS
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve(requestable.data);
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve([
+                        {
+                            "id": "com.example.app",
+                            "version": "1.0.0",
+                            "name": "Test App",
                         }
-                        else {
-                            reject(requestable.message);
+                    ]);
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_GET_INSTALLED_APPS
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -804,24 +861,29 @@ class AppGalaxyHandler {
     */
     openApp(app) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_OPEN_APP,
-                    data: {
-                        app: app
-                    }
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_OPEN_APP,
+                        data: {
+                            app: app
                         }
-                        else {
-                            reject(requestable.message);
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -834,24 +896,29 @@ class AppGalaxyHandler {
     */
     openAppProfile(app) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_OPEN_APP_PROFILE,
-                    data: {
-                        app: app
-                    }
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_OPEN_APP_PROFILE,
+                        data: {
+                            app: app
                         }
-                        else {
-                            reject(requestable.message);
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);
@@ -885,22 +952,27 @@ class NotificationHandler {
     */
     notify(notifiable) {
         return new Promise((resolve, reject) => {
-            var _a;
+            var _a, _b;
             try {
-                (_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.request({
-                    id: "request_id",
-                    api: RequestHandler_1.API_NOTIFY,
-                    data: notifiable
-                }, {
-                    onComplete(requestable) {
-                        if (!requestable.error) {
-                            resolve();
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_NOTIFY,
+                        data: notifiable
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
                         }
-                        else {
-                            reject(requestable.message);
-                        }
-                    }
-                });
+                    });
+                }
             }
             catch (error) {
                 reject(error);

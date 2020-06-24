@@ -68,10 +68,6 @@ export const init = (id: string, debug?: boolean): FamenunApi => {
                 var script = document.createElement("script");
                 script.innerHTML = decodeURIComponent(code);
                 document.body.append(script);
-            },
-            logListeners: [],
-            onLog: (listener: any) => {
-                win.__famenun__.logListeners.push(listener);
             }
         };
     } catch (e) { }

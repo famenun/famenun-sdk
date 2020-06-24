@@ -46,23 +46,16 @@ export class RequestHandler {
     private listeners: Map<string, OnRequestCompleteListener> = new Map();
 
     constructor(public debug?: boolean, ) {
-        if(this.debug !== true){
-            this.initConsole(this, console, window);
-        }
+        this.initConsole(this, console);
     }
-
-    private initConsole(self: any, console: any, window: any): void {
-        console.stdlog = console.log.bind(console);
-        console.logs = [];
+    
+    private initConsole(self: any, console: any): void {
+        console._f_log_ = console.log.bind(console);
+        console._f_logs_ = [];
         console.log = function () {
-            console.logs.push(Array.from(arguments));
-            console.stdlog.apply(console, arguments);
-            const log = console.logs[console.logs.length - 1];
-            if (window.__famenun__ !== undefined) {
-                for (const logListener of window.__famenun__.logListeners) {
-                    logListener(log);
-                }
-            }
+            console._f_logs_.push(Array.from(arguments));
+            console._f_log_.apply(console, arguments);
+            const log = console._f_logs_[console._f_logs_.length - 1];
             try {
                 const requestable: Requestable = JSON.parse(log);
                 if (
