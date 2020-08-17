@@ -4,11 +4,12 @@ import { CircleHandler } from "./handlers/CircleHandler";
 import { PaymentHandler } from "./handlers/PaymentHandler";
 import { PublishHandler } from "./handlers/PublishHandler";
 import { ChatroomHandler } from "./handlers/ChatroomHandler";
-import { DatabaseHandler } from "./handlers/DatabaseHandler";
 import { LinkHandler } from "./handlers/LinkHandler";
 import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
 import { NotificationHandler } from "./handlers/NotificationHandler";
 import { RequestHandler } from "./handlers/RequestHandler";
+import { HookHandler } from "./handlers/HookHandler";
+import { PageHandler } from "./handlers/PageHandler";
 
 export class Emitable {
     error?: boolean;
@@ -30,9 +31,11 @@ export class FamenunApi {
     appGalaxyHandler?: AppGalaxyHandler;
 
     toastHandler?: ToastHandler;
-    databaseHandler?: DatabaseHandler
     linkHandler?: LinkHandler;
     notificationHandler?: NotificationHandler;
+    hookHandler?: HookHandler;
+
+    pageHandler?: PageHandler;
 }
 
 export const init = (id: string, debug?: boolean): FamenunApi => {
@@ -50,9 +53,11 @@ export const init = (id: string, debug?: boolean): FamenunApi => {
         appGalaxyHandler: new AppGalaxyHandler(requestHandler),
 
         toastHandler: new ToastHandler(requestHandler),
-        databaseHandler: new DatabaseHandler(requestHandler),
         linkHandler: new LinkHandler(requestHandler),
-        notificationHandler: new NotificationHandler(requestHandler)
+        notificationHandler: new NotificationHandler(requestHandler),
+        hookHandler: new HookHandler(requestHandler),
+
+        pageHandler: new PageHandler(requestHandler)
     };
 }
 

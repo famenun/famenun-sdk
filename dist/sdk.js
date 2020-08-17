@@ -97,11 +97,12 @@ const CircleHandler_1 = __webpack_require__(5);
 const PaymentHandler_1 = __webpack_require__(6);
 const PublishHandler_1 = __webpack_require__(7);
 const ChatroomHandler_1 = __webpack_require__(8);
-const DatabaseHandler_1 = __webpack_require__(9);
-const LinkHandler_1 = __webpack_require__(10);
-const AppGalaxyHandler_1 = __webpack_require__(11);
-const NotificationHandler_1 = __webpack_require__(12);
+const LinkHandler_1 = __webpack_require__(9);
+const AppGalaxyHandler_1 = __webpack_require__(10);
+const NotificationHandler_1 = __webpack_require__(11);
 const RequestHandler_1 = __webpack_require__(2);
+const HookHandler_1 = __webpack_require__(12);
+const PageHandler_1 = __webpack_require__(13);
 class Emitable {
 }
 exports.Emitable = Emitable;
@@ -120,9 +121,10 @@ exports.init = (id, debug) => {
         chatroomHandler: new ChatroomHandler_1.ChatroomHandler(requestHandler),
         appGalaxyHandler: new AppGalaxyHandler_1.AppGalaxyHandler(requestHandler),
         toastHandler: new ToastHandler_1.ToastHandler(requestHandler),
-        databaseHandler: new DatabaseHandler_1.DatabaseHandler(requestHandler),
         linkHandler: new LinkHandler_1.LinkHandler(requestHandler),
-        notificationHandler: new NotificationHandler_1.NotificationHandler(requestHandler)
+        notificationHandler: new NotificationHandler_1.NotificationHandler(requestHandler),
+        hookHandler: new HookHandler_1.HookHandler(requestHandler),
+        pageHandler: new PageHandler_1.PageHandler(requestHandler)
     };
 };
 (function () {
@@ -178,9 +180,10 @@ class ProfileHandler {
             try {
                 if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
                     resolve({
-                        "id": "user_uid",
+                        "accessToken": "uid_access_token",
+                        "uId": "user_uid",
                         "dp": "user_dp",
-                        "na": "user name"
+                        "name": "user name"
                     });
                 }
                 else {
@@ -215,7 +218,7 @@ class ProfileHandler {
                     resolve();
                 }
                 else {
-                    profileShortcut.dp = yield Utility_1.blobUrlToBase64(profileShortcut.dp);
+                    profileShortcut.image = yield Utility_1.resolveImage(profileShortcut.image);
                     (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
                         id: "request_id",
                         api: RequestHandler_1.API_CREATE_SHORTCUT,
@@ -237,6 +240,72 @@ class ProfileHandler {
             }
         }));
     }
+    /**
+    * Get verified email access token
+    */
+    getEmailAccessToken() {
+        return new Promise((resolve, reject) => {
+            var _a, _b;
+            try {
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve({
+                        "accessToken": "email_access_token"
+                    });
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_GET_EMAIL
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+    /**
+    * Get verified email access token
+    */
+    getPhoneNumberAccessToken() {
+        return new Promise((resolve, reject) => {
+            var _a, _b;
+            try {
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve({
+                        "accessToken": "phone_access_token"
+                    });
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_GET_PHONE_NUMBER
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
 }
 exports.ProfileHandler = ProfileHandler;
 
@@ -247,9 +316,20 @@ exports.ProfileHandler = ProfileHandler;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.API_GET_PROFILE = "API_GET_PROFILE";
 exports.API_CREATE_SHORTCUT = "API_CREATE_SHORTCUT";
+exports.API_GET_EMAIL = "API_GET_EMAIL";
+exports.API_GET_PHONE_NUMBER = "API_GET_PHONE_NUMBER";
 exports.API_GET_CIRCLE = "API_GET_CIRCLE";
 exports.API_MAKE_PAYMENT = "API_MAKE_PAYMENT";
 exports.API_PUBLISH = "API_PUBLISH";
@@ -261,9 +341,12 @@ exports.API_SHOW_TOAST = "API_SHOW_TOAST";
 exports.API_INSERT_DATA = "API_INSERT_DATA";
 exports.API_GET_DATA = "API_GET_DATA";
 exports.API_OPEN_LINK = "API_OPEN_LINK";
+exports.API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
 exports.API_NOTIFY = "API_NOTIFY";
 const API_GET_PROFILE_RESPONSE = "API_GET_PROFILE_RESPONSE";
 const API_CREATE_SHORTCUT_RESPONSE = "API_CREATE_SHORTCUT_RESPONSE";
+const API_GET_EMAIL_RESPONSE = "API_GET_EMAIL_RESPONSE";
+const API_GET_PHONE_NUMBER_RESPONSE = "API_GET_PHONE_NUMBER_RESPONSE";
 const API_GET_CIRCLE_RESPONSE = "API_GET_CIRCLE_RESPONSE";
 const API_MAKE_PAYMENT_RESPONSE = "API_MAKE_PAYMENT_RESPONSE";
 const API_PUBLISH_RESPONSE = "API_PUBLISH_RESPONSE";
@@ -275,6 +358,7 @@ const API_SHOW_TOAST_RESPONSE = "API_SHOW_TOAST_RESPONSE";
 const API_INSERT_DATA_RESPONSE = "API_INSERT_DATA_RESPONSE";
 const API_GET_DATA_RESPONSE = "API_GET_DATA_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
+exports.API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
 const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
 class Requestable {
 }
@@ -283,17 +367,21 @@ class RequestHandler {
     constructor(debug) {
         this.debug = debug;
         this.listeners = new Map();
-        this.initConsole(this, console);
+        try {
+            this.initConsole(this, window, console);
+        }
+        catch (error) { }
     }
-    initConsole(self, console) {
-        console._f_log_ = console.log.bind(console);
+    initConsole(self, window, console) {
+        window.__SDK_API_log_messages__ = [];
+        window.__SDK_API_log_errors__ = [];
+        console._f_logger_ = console.log.bind(console);
         console._f_logs_ = [];
-        console.log = function () {
-            console._f_logs_.push(Array.from(arguments));
-            console._f_log_.apply(console, arguments);
-            const log = console._f_logs_[console._f_logs_.length - 1];
+        console.log = (...args) => {
+            window.__SDK_API_log_messages__.push(args);
+            let interceptable = false;
             try {
-                const requestable = JSON.parse(log);
+                const requestable = JSON.parse(args);
                 if (requestable.id !== undefined &&
                     requestable.id !== null &&
                     requestable.api !== undefined &&
@@ -301,6 +389,8 @@ class RequestHandler {
                     switch (requestable.api) {
                         case API_GET_PROFILE_RESPONSE:
                         case API_CREATE_SHORTCUT_RESPONSE:
+                        case API_GET_EMAIL_RESPONSE:
+                        case API_GET_PHONE_NUMBER_RESPONSE:
                         case API_GET_CIRCLE_RESPONSE:
                         case API_MAKE_PAYMENT_RESPONSE:
                         case API_PUBLISH_RESPONSE:
@@ -313,6 +403,7 @@ class RequestHandler {
                         case API_GET_DATA_RESPONSE:
                         case API_OPEN_LINK_RESPONSE:
                         case API_NOTIFY_RESPONSE:
+                            interceptable = true;
                             if (self.listeners.get(requestable.id) !== undefined) {
                                 self.listeners.get(requestable.id).onComplete(requestable);
                             }
@@ -320,7 +411,50 @@ class RequestHandler {
                     }
                 }
             }
-            catch (error) { }
+            catch (error) {
+                window.__SDK_API_log_errors__.push(error);
+            }
+            if (!interceptable) {
+                console._f_logs_.push(Array.from(args));
+                console._f_logger_.apply(console, args);
+            }
+        };
+        // here we should also be setting up the window message listner
+        window.onmessage = (event) => {
+            (() => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    window.__SDK_API_log_messages__.push(event.data);
+                    const requestable = JSON.parse(event.data);
+                    if (requestable.id !== undefined &&
+                        requestable.id !== null &&
+                        requestable.api !== undefined &&
+                        requestable.api !== null) {
+                        switch (requestable.api) {
+                            case API_GET_PROFILE_RESPONSE:
+                            case API_CREATE_SHORTCUT_RESPONSE:
+                            case API_GET_EMAIL_RESPONSE:
+                            case API_GET_PHONE_NUMBER_RESPONSE:
+                            case API_GET_CIRCLE_RESPONSE:
+                            case API_MAKE_PAYMENT_RESPONSE:
+                            case API_PUBLISH_RESPONSE:
+                            case API_OPEN_CHAT_RESPONSE:
+                            case API_GET_INSTALLED_APPS_RESPONSE:
+                            case API_OPEN_APP_RESPONSE:
+                            case API_OPEN_APP_PROFILE_RESPONSE:
+                            case API_SHOW_TOAST_RESPONSE:
+                            case API_OPEN_LINK_RESPONSE:
+                            case API_NOTIFY_RESPONSE:
+                                if (self.listeners.get(requestable.id) !== undefined) {
+                                    self.listeners.get(requestable.id).onComplete(requestable);
+                                }
+                                break;
+                        }
+                    }
+                }
+                catch (error) {
+                    window.__SDK_API_log_errors__.push(error);
+                }
+            }))();
         };
     }
     request(requestable, onRequestCompleteListener) {
@@ -328,6 +462,7 @@ class RequestHandler {
             this.listeners.set(requestable.id, onRequestCompleteListener);
         }
         console.log(JSON.stringify(requestable));
+        window.top.postMessage(JSON.stringify(requestable), "*");
     }
 }
 exports.RequestHandler = RequestHandler;
@@ -339,6 +474,15 @@ exports.RequestHandler = RequestHandler;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mapFromObject = (object) => {
     const map = new Map();
@@ -381,6 +525,33 @@ exports.blobUrlToBase64 = (blobUrl) => {
             reject(error);
         }
     });
+};
+exports.resolveImage = (img) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            if (img.startsWith("blob")) {
+                const base64 = yield exports.blobUrlToBase64(img);
+                resolve(base64);
+            }
+            else if (img.startsWith("file") || img.startsWith("http")) {
+                fetch(img)
+                    .then(res => res.blob())
+                    .then((blob) => __awaiter(void 0, void 0, void 0, function* () {
+                    let objectURL = URL.createObjectURL(blob);
+                    const base64 = yield exports.blobUrlToBase64(objectURL);
+                    resolve(base64);
+                })).catch(error => {
+                    resolve(undefined);
+                });
+            }
+            else {
+                resolve(undefined);
+            }
+        }
+        catch (error) {
+            resolve(undefined);
+        }
+    }));
 };
 
 
@@ -670,97 +841,6 @@ exports.ChatroomHandler = ChatroomHandler;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const RequestHandler_1 = __webpack_require__(2);
-class Insertable {
-}
-exports.Insertable = Insertable;
-class DatabaseHandler {
-    constructor(requestHandler) {
-        this.requestHandler = requestHandler;
-    }
-    /**
-    * Insert data into database
-    *
-    * @param insertable - object having data to be saved
-    *
-    */
-    insertData(insertable) {
-        return new Promise((resolve, reject) => {
-            var _a, _b;
-            try {
-                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
-                    resolve();
-                }
-                else {
-                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
-                        id: "request_id",
-                        api: RequestHandler_1.API_INSERT_DATA,
-                        data: insertable
-                    }, {
-                        onComplete(requestable) {
-                            if (!requestable.error) {
-                                resolve();
-                            }
-                            else {
-                                reject(requestable.message);
-                            }
-                        }
-                    });
-                }
-            }
-            catch (error) {
-                reject(error);
-            }
-        });
-    }
-    /**
-    * Get data from database
-    *
-    * @param key - unique identifier of the data being inserted earlier
-    *
-    */
-    getData(key) {
-        return new Promise((resolve, reject) => {
-            var _a, _b;
-            try {
-                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
-                    resolve(`value of the key : ${key}`);
-                }
-                else {
-                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
-                        id: "request_id",
-                        api: RequestHandler_1.API_GET_DATA,
-                        data: {
-                            key: key
-                        }
-                    }, {
-                        onComplete(requestable) {
-                            if (!requestable.error) {
-                                resolve(requestable.data);
-                            }
-                            else {
-                                reject(requestable.message);
-                            }
-                        }
-                    });
-                }
-            }
-            catch (error) {
-                reject(error);
-            }
-        });
-    }
-}
-exports.DatabaseHandler = DatabaseHandler;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const RequestHandler_1 = __webpack_require__(2);
 class LinkHandler {
     constructor(requestHandler) {
         this.requestHandler = requestHandler;
@@ -802,12 +882,49 @@ class LinkHandler {
             }
         });
     }
+    /**
+    * Create short link for your app
+    *
+    * @param path - the path of your app that ll be opened on click
+    *
+    */
+    createDeepLink(path) {
+        return new Promise((resolve, reject) => {
+            var _a, _b;
+            try {
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve("https://l.famenun.com/cjinr8u");
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_CREATE_DEEP_LINK,
+                        data: {
+                            path: path
+                        }
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
 }
 exports.LinkHandler = LinkHandler;
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -930,7 +1047,7 @@ exports.AppGalaxyHandler = AppGalaxyHandler;
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -981,6 +1098,230 @@ class NotificationHandler {
     }
 }
 exports.NotificationHandler = NotificationHandler;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class FView {
+}
+exports.FView = FView;
+class HookHandler {
+    constructor(requestHandler) {
+        this.requestHandler = requestHandler;
+    }
+    setContent(availableWidth, fView) {
+        if (fView.type !== undefined && fView.type === "image") {
+            const image = this.generateStyle(availableWidth, document.createElement("img"), fView);
+            image.style.objectFit = fView.scaling === "content" ? 'contain' : 'cover';
+            image.setAttribute("src", fView.content);
+            return image;
+        }
+        else {
+            if (fView.content !== undefined) {
+                if (Array.isArray(fView.content)) {
+                    let containerElement;
+                    if (fView.flow !== undefined && fView.flow === "over") {
+                        const div = this.generateStyle(availableWidth, document.createElement("div"), fView);
+                        div.style.display = 'grid';
+                        div.style.gridTemplateColumns = '1fr';
+                        containerElement = div;
+                    }
+                    else {
+                        const div = this.generateStyle(availableWidth, document.createElement("div"), fView);
+                        containerElement = div;
+                    }
+                    const fViews = JSON.parse(JSON.stringify(fView.content));
+                    let consumedWidth = 0;
+                    let consumedHeight = 0;
+                    let flow = "vertical";
+                    if (fView.flow != null) {
+                        if (fView.flow === "over") {
+                            flow = "over";
+                        }
+                        if (fView.flow === "horizontal") {
+                            flow = "horizontal";
+                        }
+                    }
+                    for (const fView1 of fViews) {
+                        if (flow === "horizontal") {
+                            if (fView1.width !== undefined && fView1.width !== 0) {
+                                consumedWidth = consumedWidth + fView1.width;
+                            }
+                            else {
+                                fView1.width = 100 - consumedWidth > 100 ? 100 : 100 - consumedWidth;
+                            }
+                        }
+                        if (flow === "vertical") {
+                            if (fView1.height !== undefined && fView1.height !== 0) {
+                                consumedHeight = consumedHeight + fView1.height;
+                            }
+                            else {
+                                fView1.height = 100 - consumedHeight > 100 ? 100 : 100 - consumedHeight;
+                            }
+                        }
+                        containerElement.append(this.setContent(Number(containerElement.style.width.split("px")[0]), fView1));
+                    }
+                    return containerElement;
+                }
+                else {
+                    const textElement = this.generateStyle(availableWidth, document.createElement("div"), fView);
+                    textElement.innerText = fView.content;
+                    if (fView.fontSize !== undefined && fView.fontSize != 0) {
+                        textElement.style.fontSize = `${fView.fontSize * Number(textElement.style.height.split("px")[0]) * 0.01 * 0.5}px`;
+                    }
+                    if (fView.fontColor != undefined) {
+                        textElement.style.color = fView.fontColor;
+                    }
+                    return textElement;
+                }
+            }
+        }
+    }
+    generateStyle(availableWidth, element, fView) {
+        element.style.display = 'flex';
+        element.style.gridRowStart = '1';
+        element.style.gridColumnStart = '1';
+        const style = element.style;
+        style.contain = 'content';
+        element.style.flexFlow = fView.flow === 'horizontal' ? 'row' : 'column';
+        // element.style.flex = fView.width !== undefined && fView.width !== 0 ? `${fView.width / 100}` : `1`;
+        element.style.width = fView.width !== undefined && fView.width !== 0 ? `${availableWidth * fView.width * 0.01}px` : `${availableWidth}px`;
+        if (fView.height !== undefined && fView.height !== 0) {
+            element.style.height = `${availableWidth * fView.height * 0.01}px`;
+        }
+        // margin
+        const marginLeft = fView.marginLeft !== undefined && fView.marginLeft !== 0 ? fView.marginLeft : fView.margin !== undefined ? fView.margin : 0;
+        const marginTop = fView.marginTop !== undefined && fView.marginTop !== 0 ? fView.marginTop : fView.margin !== undefined ? fView.margin : 0;
+        const marginRight = fView.marginRight !== undefined && fView.marginRight !== 0 ? fView.marginRight : fView.margin !== undefined ? fView.margin : 0;
+        const marginBottom = fView.marginBottom !== undefined && fView.marginBottom !== 0 ? fView.marginBottom : fView.margin !== undefined ? fView.margin : 0;
+        element.style.marginLeft = `${marginLeft * availableWidth * 0.01}px`;
+        element.style.marginTop = `${marginTop * availableWidth * 0.01}px`;
+        element.style.marginRight = `${marginRight * availableWidth * 0.01}px`;
+        element.style.marginBottom = `${marginBottom * availableWidth * 0.01}px`;
+        // padding
+        const paddingLeft = fView.paddingLeft !== undefined && fView.paddingLeft !== 0 ? fView.paddingLeft : fView.padding !== undefined ? fView.padding : 0;
+        const paddingTop = fView.paddingTop !== undefined && fView.paddingTop !== 0 ? fView.paddingTop : fView.padding !== undefined ? fView.padding : 0;
+        const paddingRight = fView.paddingRight !== undefined && fView.paddingRight !== 0 ? fView.paddingRight : fView.padding !== undefined ? fView.padding : 0;
+        const paddingBottom = fView.paddingBottom !== undefined && fView.paddingBottom !== 0 ? fView.paddingBottom : fView.padding !== undefined ? fView.padding : 0;
+        element.style.paddingLeft = `${paddingLeft * availableWidth * 0.01}px`;
+        element.style.marginTop = `${paddingTop * availableWidth * 0.01}px`;
+        element.style.marginRight = `${paddingRight * availableWidth * 0.01}px`;
+        element.style.marginBottom = `${paddingBottom * availableWidth * 0.01}px`;
+        // scale
+        const scaleX = fView.scaleX != 0 ? fView.scaleX : fView.scale != 0 ? fView.scale : 1;
+        const scaleY = fView.scaleY != 0 ? fView.scaleY : fView.scale != 0 ? fView.scale : 1;
+        element.style.transform = `scale(${scaleX}, ${scaleY})`;
+        // rotation
+        const rotateX = fView.rotateX != 0 ? fView.rotateX : fView.rotate;
+        const rotateY = fView.rotateY != 0 ? fView.rotateY : fView.rotate;
+        element.style.transform = `${element.style.transform} rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        const borderRadius = fView.cornerRadius !== undefined ? fView.cornerRadius : 0;
+        element.style.borderRadius = `${borderRadius * availableWidth * 0.01}px`;
+        // position
+        element.style.alignSelf = 'center';
+        if (fView.position != undefined) {
+            switch (fView.position) {
+                case "left":
+                    break;
+                case "leftTop":
+                    break;
+                case "top":
+                    break;
+                case "topRight":
+                    break;
+                case "right":
+                    break;
+                case "rightBottom":
+                    break;
+                case "bottom":
+                    break;
+                case "bottomLeft":
+                    break;
+                case "centerVertical":
+                    break;
+                case "centerHorizontal":
+                    break;
+            }
+        }
+        // position
+        element.style.alignItems = 'center';
+        element.style.justifyContent = 'center';
+        element.style.textAlign = 'center';
+        if (fView.gravity != undefined) {
+            switch (fView.gravity) {
+                case "left":
+                    break;
+                case "leftTop":
+                    break;
+                case "top":
+                    break;
+                case "topRight":
+                    break;
+                case "right":
+                    break;
+                case "rightBottom":
+                    break;
+                case "bottom":
+                    break;
+                case "bottomLeft":
+                    break;
+                case "centerVertical":
+                    break;
+                case "centerHorizontal":
+                    break;
+            }
+        }
+        return element;
+    }
+    fViewToHtml(rootView, fView) {
+        const element = this.setContent(rootView.offsetWidth, fView);
+        if (Number(element.style.height.split("px")[0]) > rootView.offsetWidth) {
+            element.style.height = `${rootView.offsetWidth}px`;
+        }
+        return element;
+    }
+}
+exports.HookHandler = HookHandler;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class PageHandler {
+    constructor(requestHandler) {
+        this.requestHandler = requestHandler;
+    }
+    run(id) {
+        return new Promise((resolve, reject) => {
+            try {
+                console.log(`run : ${id}`);
+                // get the default/specific property of the page
+                // add famenun app iframe
+                var iframe = document.createElement("iframe");
+                iframe.setAttribute("id", "page");
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+                iframe.setAttribute("frameborder", "0");
+                iframe.setAttribute("hspace", "0");
+                iframe.setAttribute("vspace", "0");
+                iframe.setAttribute("src", "https://famenun.com/run/com.famenun.shotme");
+                document.body.append(iframe);
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+}
+exports.PageHandler = PageHandler;
 
 
 /***/ })

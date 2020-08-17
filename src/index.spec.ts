@@ -15,11 +15,25 @@ describe("SDK", () => {
 
         try {
             await api.profileHandler?.createShortcut({
-                dp: "https://famenun.com/dp.png",
-                na: "About me",
-                pa: "./aboutme.html?user={uid}"
+                image: "https://famenun.com/dp.png",
+                name: "About me",
+                path: "./aboutme.html?user=user_uid"
             });
             console.log("shortcut created");
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            const data: any = await api.profileHandler?.getEmailAccessToken();
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            const data: any = await api.profileHandler?.getPhoneNumberAccessToken();
+            console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -33,11 +47,11 @@ describe("SDK", () => {
 
         try {
             await api.paymentHandler?.makePayment({
-                id: "txn_id", 
-                cu: CURRENCY_INR, 
-                am: 21, 
-                re: "aditya",
-                su: "buy shots premium"
+                referenceId: "txn_id", 
+                currency: CURRENCY_INR, 
+                amount: 21, 
+                receiver: "aditya",
+                subject: "buy shots premium"
             });
             console.log("payment made");
         } catch (error) {
@@ -85,27 +99,17 @@ describe("SDK", () => {
         } catch (error) {
             console.log(error);
         }
-
-        try {
-            await api.databaseHandler?.insertData({
-                key: "first_entry",
-                value: "this is a test entry"
-            });
-            console.log("Data inserted");
-        } catch (error) {
-            console.log(error);
-        }
-
-        try {
-            const data = await api.databaseHandler?.getData("first_entry");
-            console.log(data);
-        } catch (error) {
-            console.log(error);
-        }
-
+        
         try {
             await api.linkHandler?.openLink("https://legal.famenun.com/policies");
             console.log("link opened");
+        } catch (error) {
+            console.log(error);
+        }
+        
+        try {
+            const link = await api.linkHandler?.createDeepLink("./index.html?user=user_uid");
+            console.log("link : " + link);
         } catch (error) {
             console.log(error);
         }

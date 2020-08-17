@@ -4,11 +4,11 @@ export const CURRENCY_INR = "INR";
 export const CURRENCY_USD = "USD";
 
 export class Payable {
-    id?: string;
-    cu?: string;
-    am?: number;
-    re?: string;
-    su?: string; // the subject of the payment
+    referenceId?: string;
+    currency?: string;
+    amount?: number;
+    receiver?: string;
+    subject?: string; // the subject of the payment
 }
 
 export class PaymentHandler {

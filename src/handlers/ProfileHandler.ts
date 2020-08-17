@@ -1,13 +1,10 @@
-import { Requestable, RequestHandler, API_GET_PROFILE, API_CREATE_SHORTCUT } from "./RequestHandler";
-import { blobUrlToBase64 } from "../utils/Utility";
+import { Requestable, RequestHandler, API_GET_PROFILE, API_CREATE_SHORTCUT, API_GET_EMAIL, API_GET_PHONE_NUMBER } from "./RequestHandler";
+import { blobUrlToBase64, resolveImage } from "../utils/Utility";
 
 export class ProfileShortcut {
-    dp!: string; // dp of the shortcut
-    na!: string; // name of the shortcut
-    /**
-     * syntax of the path can have wild card for uid. for ex. "./profile.html?user={uid}"
-     */
-    pa!: string; // path that must be opened when user clicks the shortcut
+    image!: string; // dp of the shortcut
+    name!: string; // name of the shortcut
+    path!: string; // path that must be opened when user clicks the shortcut
 }
 
 export class ProfileHandler {
@@ -22,9 +19,10 @@ export class ProfileHandler {
             try {
                 if(this.requestHandler?.debug){
                     resolve({
-                        "id": "user_uid",
+                        "accessToken": "uid_access_token",
+                        "uId": "user_uid",
                         "dp": "user_dp",
-                        "na": "user name"
+                        "name": "user name"
                     });
                 }else{
                     this.requestHandler?.request({
@@ -55,7 +53,7 @@ export class ProfileHandler {
                 if(this.requestHandler?.debug){
                     resolve();
                 }else{
-                    profileShortcut.dp = await blobUrlToBase64(profileShortcut.dp);
+                    profileShortcut.image = await resolveImage(profileShortcut.image);
                     this.requestHandler?.request({
                         id: "request_id",
                         api: API_CREATE_SHORTCUT,
@@ -64,6 +62,66 @@ export class ProfileHandler {
                         onComplete(requestable: Requestable): void {
                             if(!requestable.error){
                                 resolve();
+                            }else{
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }catch(error){
+                reject(error);
+            }
+        });
+    }
+
+    /**
+    * Get verified email access token
+    */
+    getEmailAccessToken(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            try {
+                if(this.requestHandler?.debug){
+                    resolve({
+                        "accessToken": "email_access_token"
+                    });
+                }else{
+                    this.requestHandler?.request({
+                        id: "request_id",
+                        api: API_GET_EMAIL
+                    }, {
+                        onComplete(requestable: Requestable): void {
+                            if(!requestable.error){
+                                resolve(requestable.data);
+                            }else{
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }catch(error){
+                reject(error);
+            }
+        });
+    }
+
+    /**
+    * Get verified email access token
+    */
+    getPhoneNumberAccessToken(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            try {
+                if(this.requestHandler?.debug){
+                    resolve({
+                        "accessToken": "phone_access_token"
+                    });
+                }else{
+                    this.requestHandler?.request({
+                        id: "request_id",
+                        api: API_GET_PHONE_NUMBER
+                    }, {
+                        onComplete(requestable: Requestable): void {
+                            if(!requestable.error){
+                                resolve(requestable.data);
                             }else{
                                 reject(requestable.message);
                             }

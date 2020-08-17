@@ -38,8 +38,33 @@ export const blobUrlToBase64 = (blobUrl: string): Promise<any> => {
                 };
             };
             request.send();
-        }catch(error){
+        } catch (error) {
             reject(error);
+        }
+    })
+}
+
+export const resolveImage = (img: string): Promise<any> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (img.startsWith("blob")) {
+                const base64 = await blobUrlToBase64(img);
+                resolve(base64);
+            }else if (img.startsWith("file") || img.startsWith("http")) {
+                fetch(img)
+                    .then(res => res.blob()) 
+                    .then(async blob => {
+                        let objectURL = URL.createObjectURL(blob);
+                        const base64 = await blobUrlToBase64(objectURL);
+                        resolve(base64);
+                    }).catch(error => {
+                        resolve(undefined);
+                    });
+            }else{
+                resolve(undefined);
+            }
+        } catch (error) {
+            resolve(undefined);
         }
     })
 }

@@ -9,6 +9,14 @@
 </head>
 
 <body>
+    <h1 style="color: #ff659a;">FView Api Test</h1>
+    <br>
+    <input id="code" name="code" placeholder="Code" />
+    <br>
+    <br>
+    <button onclick="renderCode()">render code</button>
+    <br>
+    <br>
     <h1 style="color: #ff659a;">Toast Api Test</h1>
     <br>
     <input id="message" name="message" placeholder="Message" />
@@ -26,8 +34,13 @@
     <button onclick="getProfile()">get profile</button>
     <br>
     <br>
-    <br>
     <button onclick="createProfileShortcut()">create profile shortcut</button>
+    <br>
+    <br>
+    <button onclick="getEmail()">get email</button>
+    <br>
+    <br>
+    <button onclick="getPhoneNumber()">get phone number</button>
     <br>
     <br>
     <h1 style="color: #ff659a;">Circle Api Test</h1>
@@ -63,19 +76,11 @@
     <button onclick="publsh()">publish</button>
     <br>
     <br>
-    <h1 style="color: #ff659a;">Insert Data</h1>
-    <br>
-    <button onclick="insertData()">insert data</button>
-    <br>
-    <br>
-    <h1 style="color: #ff659a;">Get Data</h1>
-    <br>
-    <button onclick="getData()">get Data</button>
-    <br>
-    <br>
     <h1 style="color: #ff659a;">Links Api</h1>
     <br>
     <button onclick="openLink()">Open Link</button>
+    <br>
+    <button onclick="createDeepLink()">Create Deep Link</button>
     <br>
     <br>
     <h1 style="color: #ff659a;">Notification Api</h1>
@@ -92,12 +97,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./sdk.js"></script>
     <script>
-        try {
-            var url = new URL(window.location.href);
-            var user = url.searchParams.get("user");
-            console.log(`user : ${user}`);
-        } catch (err) {}
-
         var uid = "aditya";
         var files = [];
 
@@ -114,17 +113,38 @@
         console.stdlog = console.log.bind(console);
         console.logs = [];
         console.log = function() {
-            console.logs.push(Array.from(arguments));
-            console.stdlog.apply(console, arguments);
-            var logStrings = "";
-            for (const log of console.logs) {
-                logStrings += `\n\n${log}`;
-            }
-            document.getElementById("logs-container").innerText = logStrings;
+            try {
+                console.logs.push(Array.from(arguments));
+                console.stdlog.apply(console, arguments);
+                var logStrings = "";
+                for (const log of console.logs) {
+                    logStrings += `\n\n${log}`;
+                }
+                document.getElementById("logs-container").innerText = logStrings;
+            } catch (error) {}
         };
 
-        const api = __famenun__.init("my_app_id", true);
+        const api = __famenun__.init("my_app_id");
         console.log(api.appId, api.debug);
+
+        try {
+            (async() => {
+                var url = new URL(window.location.href);
+                var user = url.searchParams.get("user");
+                if (user !== undefined && user !== null) {
+                    await api.toastHandler.showToast(`Show ${user}'a profile`);
+                }
+            })();
+        } catch (err) {}
+
+        function renderCode() {
+            const code = document.getElementById("code").value;
+            document.body.innerHTML = '';
+            const div = document.createElement("div");
+            document.body.append(div);
+            const html = api.hookHandler.fViewToHtml(div, JSON.parse(code));
+            div.append(html);
+        }
 
         function showToast() {
             const message = document.getElementById("message").value;
@@ -143,9 +163,9 @@
                 try {
                     const profile = await api.profileHandler.getProfile();
                     console.log(`profile : ${JSON.stringify(profile)}`);
-                    uid = profile.id;
+                    uid = profile.uId;
                     document.getElementById("dp").setAttribute("src", profile.dp);
-                    document.getElementById("name").innerText = profile.na;
+                    document.getElementById("name").innerText = profile.name;
                 } catch (error) {
                     console.log(error);
                 }
@@ -156,11 +176,33 @@
             setTimeout(async() => {
                 try {
                     await api.profileHandler.createShortcut({
-                        dp: files[0],
-                        na: "Test",
-                        pa: "./index.html?user={uid}"
+                        image: files[0],
+                        name: "Test",
+                        path: "./index.html?user=usr_uid"
                     });
                     console.log("profile shortcut created")
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function getEmail() {
+            setTimeout(async() => {
+                try {
+                    const data = await api.profileHandler.getEmailAccessToken();
+                    console.log(`data : ${JSON.stringify(data)}`);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function getPhoneNumber() {
+            setTimeout(async() => {
+                try {
+                    const data = await api.profileHandler.getPhoneNumberAccessToken();
+                    console.log(`data : ${JSON.stringify(data)}`);
                 } catch (error) {
                     console.log(error);
                 }
@@ -226,10 +268,11 @@
             setTimeout(async() => {
                 try {
                     await api.paymentHandler.makePayment({
-                        id: "txn_id",
-                        cu: "INR",
-                        am: 21,
-                        re: "aditya"
+                        referenceId: "txn_id",
+                        currency: "INR",
+                        amount: 21,
+                        receiver: "aditya",
+                        subject: "buy shots premium"
                     });
                     console.log(`payment done :>`);
                 } catch (error) {
@@ -249,36 +292,22 @@
             }, 0);
         }
 
-        function insertData() {
-            setTimeout(async() => {
-                try {
-                    await api.databaseHandler.insertData({
-                        key: "first_entry",
-                        value: "this is a test entry"
-                    });
-                    console.log(`data inserted :>`);
-                } catch (error) {
-                    console.log(error);
-                }
-            }, 0);
-        }
-
-        function getData() {
-            setTimeout(async() => {
-                try {
-                    const data = await api.databaseHandler.getData("first_entry");
-                    console.log(data);
-                } catch (error) {
-                    console.log(error);
-                }
-            }, 0);
-        }
-
         function openLink() {
             setTimeout(async() => {
                 try {
                     await api.linkHandler.openLink("https://legal.famenun.com/policies");
                     console.log("link opened");
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function createDeepLink() {
+            setTimeout(async() => {
+                try {
+                    const link = await api.linkHandler.createDeepLink("./index.html?user=user_uid");
+                    console.log("link : " + link);
                 } catch (error) {
                     console.log(error);
                 }
