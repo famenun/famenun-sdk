@@ -31,3 +31,4 @@ export declare class FamenunApi {
     pageHandler?: PageHandler;
 }
 export declare const init: (id: string, debug?: boolean | undefined) => FamenunApi;
+export declare const runWebsite: (website: string) => void;

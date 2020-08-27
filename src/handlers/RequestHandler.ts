@@ -51,7 +51,7 @@ export class RequestHandler {
 
     private listeners: Map<string, OnRequestCompleteListener> = new Map();
 
-    constructor(public debug?: boolean, ) {
+    constructor(public debug?: boolean) {
         try {
             this.initConsole(this, window, console);
         } catch (error) { }
@@ -150,7 +150,7 @@ export class RequestHandler {
             this.listeners.set(requestable.id, onRequestCompleteListener);
         }
         console.log(JSON.stringify(requestable));
-        window.top.postMessage(JSON.stringify(requestable), "*");
+        window.parent.postMessage(JSON.stringify(requestable), "*");
     }
 
 }
