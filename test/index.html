@@ -120,12 +120,12 @@
                 for (const log of console.logs) {
                     logStrings += `\n\n${log}`;
                 }
-                document.getElementById("logs-container").innerText = logStrings;
+                // document.getElementById("logs-container").innerText = logStrings;
             } catch (error) {}
         };
 
-        const api = __famenun__.init("my_app_id");
-        console.log(api.appId, api.debug);
+        const api = __famenun__.init();
+        console.log(api.debug);
 
         try {
             (async() => {
@@ -176,7 +176,8 @@
             setTimeout(async() => {
                 try {
                     await api.profileHandler.createShortcut({
-                        image: files[0],
+                        // image: files[0],
+                        image: "icon.png",
                         name: "Test",
                         path: "./index.html?user=usr_uid"
                     });
@@ -271,8 +272,8 @@
                         referenceId: "txn_id",
                         currency: "INR",
                         amount: 21,
-                        receiver: "aditya",
-                        subject: "buy shots premium"
+                        to: "fPtJJsw2TDFlwfPVpB3g",
+                        note: "buy shots premium"
                     });
                     console.log(`payment done :>`);
                 } catch (error) {

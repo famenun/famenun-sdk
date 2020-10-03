@@ -7,14 +7,13 @@ import { ChatroomHandler } from "./handlers/ChatroomHandler";
 import { LinkHandler } from "./handlers/LinkHandler";
 import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
 import { NotificationHandler } from "./handlers/NotificationHandler";
-import { RequestHandler } from "./handlers/RequestHandler";
+import { RequestHandler, API_HOOK } from "./handlers/RequestHandler";
 import { HookHandler } from "./handlers/HookHandler";
 import { PageHandler } from "./handlers/PageHandler";
 
-export class Emitable {
-    error?: boolean;
-    message?: string;
-    type?: string;
+export class Hookable {
+    id!: string;
+    layout?: string;
     data?: any;
 }
 
@@ -38,10 +37,9 @@ export class FamenunApi {
     pageHandler?: PageHandler;
 }
 
-export const init = (id: string, debug?: boolean): FamenunApi => {
+export const init = (debug?: boolean): FamenunApi => {
     const requestHandler: RequestHandler = new RequestHandler(debug);
     return {
-        appId: id,
         debug: debug,
 
         profileHandler: new ProfileHandler(requestHandler),
@@ -92,11 +90,16 @@ export const runWebsite = (website: string) => {
 
 (function () {
     try {
+        const requestHandler: RequestHandler = new RequestHandler();
         var win: any = window;
         win.__famenun__ = {
             init: init,
-            emit: (emitable: Emitable) => {
-                console.log(JSON.stringify(emitable));
+            emit: (emitable: Hookable) => {
+                requestHandler.request({
+                    id: emitable.id,
+                    api: API_HOOK,
+                    data: emitable
+                });
             },
             registerHook: (code: string) => {
                 var script = document.createElement("script");
@@ -107,3 +110,9 @@ export const runWebsite = (website: string) => {
         };
     } catch (e) { }
 })();
+
+
+// TODO: add dark mode support
+// TODO: don't ask for app id instead the system should set the app id
+// TODO: create camera api
+// TODO: move out the page handler into @famenun/web

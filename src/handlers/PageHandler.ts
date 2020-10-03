@@ -12,7 +12,7 @@ export class PageHandler {
                 // add famenun app iframe
                 var iframe = document.createElement("iframe");
                 iframe.setAttribute("id", "page");
-                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms");
                 iframe.setAttribute("frameborder", "0");
                 iframe.setAttribute("hspace", "0");
                 iframe.setAttribute("vspace", "0");

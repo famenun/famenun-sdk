@@ -1,4 +1,3 @@
-import { emit } from "cluster";
 
 export const mapFromObject = (object: any): Map<string, any> => {
     const map: Map<string, any> = new Map();
@@ -21,23 +20,21 @@ export const objectFromMap = (map: any): any => {
 }
 
 
-export const blobUrlToBase64 = (blobUrl: string): Promise<any> => {
+export const blobUrlToBase64 = (url: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         try {
-            const request = new XMLHttpRequest();
-            request.open('GET', blobUrl, true);
-            request.responseType = 'blob';
-            request.onload = function () {
-                const reader = new FileReader();
-                reader.readAsDataURL(request.response);
-                reader.onerror = (error: any) => {
-                    reject(error);
-                };
-                reader.onload = (event: any) => {
-                    resolve(event.target.result);
-                };
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                const reader: any = new FileReader();
+                reader.onerror = reject;
+                reader.onloadend = function () {
+                    resolve(reader.result.toString());
+                }
+                reader.readAsDataURL(xhr.response);
             };
-            request.send();
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
         } catch (error) {
             reject(error);
         }
@@ -47,12 +44,11 @@ export const blobUrlToBase64 = (blobUrl: string): Promise<any> => {
 export const resolveImage = (img: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (img.startsWith("blob")) {
-                const base64 = await blobUrlToBase64(img);
-                resolve(base64);
-            }else if (img.startsWith("file") || img.startsWith("http")) {
+            if (img.startsWith("data")) {
+                resolve(img);
+            } else {
                 fetch(img)
-                    .then(res => res.blob()) 
+                    .then(res => res.blob())
                     .then(async blob => {
                         let objectURL = URL.createObjectURL(blob);
                         const base64 = await blobUrlToBase64(objectURL);
@@ -60,8 +56,6 @@ export const resolveImage = (img: string): Promise<any> => {
                     }).catch(error => {
                         resolve(undefined);
                     });
-            }else{
-                resolve(undefined);
             }
         } catch (error) {
             resolve(undefined);

@@ -4,7 +4,7 @@ import { CURRENCY_INR } from "./handlers/PaymentHandler";
 describe("SDK", () => {
     it("initailse SDk", async () => {
 
-        const api = SDK.init("app_id", true);
+        const api = SDK.init(true);
 
         try {
             const profile: any = await api.profileHandler?.getProfile();
@@ -50,8 +50,8 @@ describe("SDK", () => {
                 referenceId: "txn_id", 
                 currency: CURRENCY_INR, 
                 amount: 21, 
-                receiver: "aditya",
-                subject: "buy shots premium"
+                to: "aditya",
+                note: "buy shots premium"
             });
             console.log("payment made");
         } catch (error) {

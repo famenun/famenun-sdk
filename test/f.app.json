@@ -2,7 +2,7 @@
     /*version of the app release*/
     "version": "1.0.0",
     /*id of the app*/
-    "id": "com.example.app",
+    "id": "test-app",
     /*name of the app*/
     "name": "Test App",
     /*path of the app*/

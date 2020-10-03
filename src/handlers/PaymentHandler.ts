@@ -7,8 +7,8 @@ export class Payable {
     referenceId?: string;
     currency?: string;
     amount?: number;
-    receiver?: string;
-    subject?: string; // the subject of the payment
+    to?: string;
+    note?: string; 
 }
 
 export class PaymentHandler {

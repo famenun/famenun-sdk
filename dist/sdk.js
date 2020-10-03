@@ -103,16 +103,15 @@ const NotificationHandler_1 = __webpack_require__(11);
 const RequestHandler_1 = __webpack_require__(2);
 const HookHandler_1 = __webpack_require__(12);
 const PageHandler_1 = __webpack_require__(13);
-class Emitable {
+class Hookable {
 }
-exports.Emitable = Emitable;
+exports.Hookable = Hookable;
 class FamenunApi {
 }
 exports.FamenunApi = FamenunApi;
-exports.init = (id, debug) => {
+exports.init = (debug) => {
     const requestHandler = new RequestHandler_1.RequestHandler(debug);
     return {
-        appId: id,
         debug: debug,
         profileHandler: new ProfileHandler_1.ProfileHandler(requestHandler),
         circleHandler: new CircleHandler_1.CircleHandler(requestHandler),
@@ -155,11 +154,16 @@ exports.runWebsite = (website) => {
 };
 (function () {
     try {
+        const requestHandler = new RequestHandler_1.RequestHandler();
         var win = window;
         win.__famenun__ = {
             init: exports.init,
             emit: (emitable) => {
-                console.log(JSON.stringify(emitable));
+                requestHandler.request({
+                    id: emitable.id,
+                    api: RequestHandler_1.API_HOOK,
+                    data: emitable
+                });
             },
             registerHook: (code) => {
                 var script = document.createElement("script");
@@ -171,6 +175,10 @@ exports.runWebsite = (website) => {
     }
     catch (e) { }
 })();
+// TODO: add dark mode support
+// TODO: don't ask for app id instead the system should set the app id
+// TODO: create camera api
+// TODO: move out the page handler into @famenun/web
 
 
 /***/ }),
@@ -370,6 +378,7 @@ exports.API_GET_DATA = "API_GET_DATA";
 exports.API_OPEN_LINK = "API_OPEN_LINK";
 exports.API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
 exports.API_NOTIFY = "API_NOTIFY";
+exports.API_HOOK = "API_HOOK";
 const API_GET_PROFILE_RESPONSE = "API_GET_PROFILE_RESPONSE";
 const API_CREATE_SHORTCUT_RESPONSE = "API_CREATE_SHORTCUT_RESPONSE";
 const API_GET_EMAIL_RESPONSE = "API_GET_EMAIL_RESPONSE";
@@ -385,7 +394,7 @@ const API_SHOW_TOAST_RESPONSE = "API_SHOW_TOAST_RESPONSE";
 const API_INSERT_DATA_RESPONSE = "API_INSERT_DATA_RESPONSE";
 const API_GET_DATA_RESPONSE = "API_GET_DATA_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
-exports.API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
+const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
 const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
 class Requestable {
 }
@@ -530,23 +539,21 @@ exports.objectFromMap = (map) => {
     });
     return object;
 };
-exports.blobUrlToBase64 = (blobUrl) => {
+exports.blobUrlToBase64 = (url) => {
     return new Promise((resolve, reject) => {
         try {
-            const request = new XMLHttpRequest();
-            request.open('GET', blobUrl, true);
-            request.responseType = 'blob';
-            request.onload = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
                 const reader = new FileReader();
-                reader.readAsDataURL(request.response);
-                reader.onerror = (error) => {
-                    reject(error);
+                reader.onerror = reject;
+                reader.onloadend = function () {
+                    resolve(reader.result.toString());
                 };
-                reader.onload = (event) => {
-                    resolve(event.target.result);
-                };
+                reader.readAsDataURL(xhr.response);
             };
-            request.send();
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
         }
         catch (error) {
             reject(error);
@@ -556,11 +563,10 @@ exports.blobUrlToBase64 = (blobUrl) => {
 exports.resolveImage = (img) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            if (img.startsWith("blob")) {
-                const base64 = yield exports.blobUrlToBase64(img);
-                resolve(base64);
+            if (img.startsWith("data")) {
+                resolve(img);
             }
-            else if (img.startsWith("file") || img.startsWith("http")) {
+            else {
                 fetch(img)
                     .then(res => res.blob())
                     .then((blob) => __awaiter(void 0, void 0, void 0, function* () {
@@ -570,9 +576,6 @@ exports.resolveImage = (img) => {
                 })).catch(error => {
                     resolve(undefined);
                 });
-            }
-            else {
-                resolve(undefined);
             }
         }
         catch (error) {
@@ -1335,7 +1338,7 @@ class PageHandler {
                 // add famenun app iframe
                 var iframe = document.createElement("iframe");
                 iframe.setAttribute("id", "page");
-                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms");
                 iframe.setAttribute("frameborder", "0");
                 iframe.setAttribute("hspace", "0");
                 iframe.setAttribute("vspace", "0");

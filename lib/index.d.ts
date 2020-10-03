@@ -9,10 +9,9 @@ import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
 import { NotificationHandler } from "./handlers/NotificationHandler";
 import { HookHandler } from "./handlers/HookHandler";
 import { PageHandler } from "./handlers/PageHandler";
-export declare class Emitable {
-    error?: boolean;
-    message?: string;
-    type?: string;
+export declare class Hookable {
+    id: string;
+    layout?: string;
     data?: any;
 }
 export declare class FamenunApi {
@@ -30,5 +29,5 @@ export declare class FamenunApi {
     hookHandler?: HookHandler;
     pageHandler?: PageHandler;
 }
-export declare const init: (id: string, debug?: boolean | undefined) => FamenunApi;
+export declare const init: (debug?: boolean | undefined) => FamenunApi;
 export declare const runWebsite: (website: string) => void;
