@@ -9,10 +9,17 @@ import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
 import { NotificationHandler } from "./handlers/NotificationHandler";
 import { HookHandler } from "./handlers/HookHandler";
 import { PageHandler } from "./handlers/PageHandler";
+import { DeviceHandler } from "./handlers/DeviceHandler";
 export declare class Hookable {
     id: string;
     layout?: string;
     data?: any;
+    resources?: string[];
+    title?: string;
+    action?: string;
+    actionText?: string;
+    userPhoto?: string;
+    userName?: string;
 }
 export declare class FamenunApi {
     appId?: string;
@@ -26,6 +33,7 @@ export declare class FamenunApi {
     toastHandler?: ToastHandler;
     linkHandler?: LinkHandler;
     notificationHandler?: NotificationHandler;
+    deviceHandler?: DeviceHandler;
     hookHandler?: HookHandler;
     pageHandler?: PageHandler;
 }

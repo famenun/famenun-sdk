@@ -9,14 +9,6 @@
 </head>
 
 <body>
-    <h1 style="color: #ff659a;">FView Api Test</h1>
-    <br>
-    <input id="code" name="code" placeholder="Code" />
-    <br>
-    <br>
-    <button onclick="renderCode()">render code</button>
-    <br>
-    <br>
     <h1 style="color: #ff659a;">Toast Api Test</h1>
     <br>
     <input id="message" name="message" placeholder="Message" />
@@ -88,6 +80,11 @@
     <button onclick="notify()">notify</button>
     <br>
     <br>
+    <h1 style="color: #ff659a;">Device Api</h1>
+    <br>
+    <button onclick="getDeviceInfo()">get device info</button>
+    <br>
+    <br>
     <br>
     <br>
     <br>
@@ -110,17 +107,17 @@
             console.log("files selected : " + files);
         }
 
-        console.stdlog = console.log.bind(console);
+        console.stdlog = console.log;
         console.logs = [];
         console.log = function() {
             try {
                 console.logs.push(Array.from(arguments));
-                console.stdlog.apply(console, arguments);
-                var logStrings = "";
+                console.stdlog.apply(null, arguments);
+                window.logStrings = "";
                 for (const log of console.logs) {
-                    logStrings += `\n\n${log}`;
+                    window.logStrings += `\n\n${log}`;
                 }
-                // document.getElementById("logs-container").innerText = logStrings;
+                document.getElementById("logs-container").innerText = window.logStrings;
             } catch (error) {}
         };
 
@@ -136,15 +133,6 @@
                 }
             })();
         } catch (err) {}
-
-        function renderCode() {
-            const code = document.getElementById("code").value;
-            document.body.innerHTML = '';
-            const div = document.createElement("div");
-            document.body.append(div);
-            const html = api.hookHandler.fViewToHtml(div, JSON.parse(code));
-            div.append(html);
-        }
 
         function showToast() {
             const message = document.getElementById("message").value;
@@ -327,6 +315,17 @@
                     console.log(error);
                 }
             }, 0);
+        }
+
+        function getDeviceInfo() {
+            (async() => {
+                try {
+                    const device = await api.deviceHandler.getDeviceInfo();
+                    console.log(device);
+                } catch (error) {
+                    console.log(error);
+                }
+            })();
         }
     </script>
 </body>

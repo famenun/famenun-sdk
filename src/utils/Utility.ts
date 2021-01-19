@@ -62,3 +62,12 @@ export const resolveImage = (img: string): Promise<any> => {
         }
     })
 }
+
+export const isLoadedInIframe = (): boolean => {
+    try {
+        return window.self !== window.top;
+    } catch (error) {
+        console.log(error);
+        return true;
+    }
+}

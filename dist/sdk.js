@@ -91,6 +91,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.runWebsite = exports.init = exports.FamenunApi = exports.Hookable = void 0;
 const ProfileHandler_1 = __webpack_require__(1);
 const ToastHandler_1 = __webpack_require__(4);
 const CircleHandler_1 = __webpack_require__(5);
@@ -103,30 +104,39 @@ const NotificationHandler_1 = __webpack_require__(11);
 const RequestHandler_1 = __webpack_require__(2);
 const HookHandler_1 = __webpack_require__(12);
 const PageHandler_1 = __webpack_require__(13);
+const DeviceHandler_1 = __webpack_require__(14);
 class Hookable {
 }
 exports.Hookable = Hookable;
 class FamenunApi {
 }
 exports.FamenunApi = FamenunApi;
-exports.init = (debug) => {
+const init = (debug) => {
     const requestHandler = new RequestHandler_1.RequestHandler(debug);
-    return {
-        debug: debug,
-        profileHandler: new ProfileHandler_1.ProfileHandler(requestHandler),
-        circleHandler: new CircleHandler_1.CircleHandler(requestHandler),
-        paymentHandler: new PaymentHandler_1.PaymentHandler(requestHandler),
-        publishHandler: new PublishHandler_1.PublishHandler(requestHandler),
-        chatroomHandler: new ChatroomHandler_1.ChatroomHandler(requestHandler),
-        appGalaxyHandler: new AppGalaxyHandler_1.AppGalaxyHandler(requestHandler),
-        toastHandler: new ToastHandler_1.ToastHandler(requestHandler),
-        linkHandler: new LinkHandler_1.LinkHandler(requestHandler),
-        notificationHandler: new NotificationHandler_1.NotificationHandler(requestHandler),
-        hookHandler: new HookHandler_1.HookHandler(requestHandler),
-        pageHandler: new PageHandler_1.PageHandler(requestHandler)
-    };
+    // @ts-ignore
+    if (window.__famenun_api__ === undefined) {
+        // @ts-ignore
+        window.__famenun_api__ = {
+            debug: debug,
+            profileHandler: new ProfileHandler_1.ProfileHandler(requestHandler),
+            circleHandler: new CircleHandler_1.CircleHandler(requestHandler),
+            paymentHandler: new PaymentHandler_1.PaymentHandler(requestHandler),
+            publishHandler: new PublishHandler_1.PublishHandler(requestHandler),
+            chatroomHandler: new ChatroomHandler_1.ChatroomHandler(requestHandler),
+            appGalaxyHandler: new AppGalaxyHandler_1.AppGalaxyHandler(requestHandler),
+            toastHandler: new ToastHandler_1.ToastHandler(requestHandler),
+            linkHandler: new LinkHandler_1.LinkHandler(requestHandler),
+            notificationHandler: new NotificationHandler_1.NotificationHandler(requestHandler),
+            deviceHandler: new DeviceHandler_1.DeviceHandler(requestHandler),
+            hookHandler: new HookHandler_1.HookHandler(requestHandler),
+            pageHandler: new PageHandler_1.PageHandler(requestHandler)
+        };
+    }
+    // @ts-ignore
+    return window.__famenun_api__;
 };
-exports.runWebsite = (website) => {
+exports.init = init;
+const runWebsite = (website) => {
     let domain = new URL(window.location.href).host;
     domain = domain === "pages.famenun.com" ? website : domain;
     fetch(`https://api.famenun.com/getWebsite?website=${website}&domain=${domain}`)
@@ -152,6 +162,7 @@ exports.runWebsite = (website) => {
         }
     }).catch(error => console.log(error));
 };
+exports.runWebsite = runWebsite;
 (function () {
     try {
         const requestHandler = new RequestHandler_1.RequestHandler();
@@ -197,6 +208,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProfileHandler = exports.ProfileShortcut = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 const Utility_1 = __webpack_require__(3);
 class ProfileShortcut {
@@ -361,6 +373,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RequestHandler = exports.Requestable = exports.API_HOOK = exports.API_GET_DEVICE_INFO = exports.API_NOTIFY = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_GET_DATA = exports.API_INSERT_DATA = exports.API_SHOW_TOAST = exports.API_OPEN_APP_PROFILE = exports.API_OPEN_APP = exports.API_GET_INSTALLED_APPS = exports.API_OPEN_CHAT = exports.API_PUBLISH = exports.API_MAKE_PAYMENT = exports.API_GET_CIRCLE = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = void 0;
+const Utility_1 = __webpack_require__(3);
 exports.API_GET_PROFILE = "API_GET_PROFILE";
 exports.API_CREATE_SHORTCUT = "API_CREATE_SHORTCUT";
 exports.API_GET_EMAIL = "API_GET_EMAIL";
@@ -378,6 +392,7 @@ exports.API_GET_DATA = "API_GET_DATA";
 exports.API_OPEN_LINK = "API_OPEN_LINK";
 exports.API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
 exports.API_NOTIFY = "API_NOTIFY";
+exports.API_GET_DEVICE_INFO = "API_GET_DEVICE_INFO";
 exports.API_HOOK = "API_HOOK";
 const API_GET_PROFILE_RESPONSE = "API_GET_PROFILE_RESPONSE";
 const API_CREATE_SHORTCUT_RESPONSE = "API_CREATE_SHORTCUT_RESPONSE";
@@ -396,6 +411,7 @@ const API_GET_DATA_RESPONSE = "API_GET_DATA_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
 const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
 const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
+const API_GET_DEVICE_INFO_RESPONSE = "API_GET_DEVICE_INFO_RESPONSE";
 class Requestable {
 }
 exports.Requestable = Requestable;
@@ -404,63 +420,59 @@ class RequestHandler {
         this.debug = debug;
         this.listeners = new Map();
         try {
-            this.initConsole(this, window, console);
+            this.init(this);
         }
         catch (error) { }
     }
-    initConsole(self, window, console) {
-        window.__SDK_API_log_messages__ = [];
-        window.__SDK_API_log_errors__ = [];
-        console._f_logger_ = console.log.bind(console);
-        console._f_logs_ = [];
-        console.log = (...args) => {
-            window.__SDK_API_log_messages__.push(args);
-            let interceptable = false;
-            try {
-                const requestable = JSON.parse(args);
-                if (requestable.id !== undefined &&
-                    requestable.id !== null &&
-                    requestable.api !== undefined &&
-                    requestable.api !== null) {
-                    switch (requestable.api) {
-                        case API_GET_PROFILE_RESPONSE:
-                        case API_CREATE_SHORTCUT_RESPONSE:
-                        case API_GET_EMAIL_RESPONSE:
-                        case API_GET_PHONE_NUMBER_RESPONSE:
-                        case API_GET_CIRCLE_RESPONSE:
-                        case API_MAKE_PAYMENT_RESPONSE:
-                        case API_PUBLISH_RESPONSE:
-                        case API_OPEN_CHAT_RESPONSE:
-                        case API_GET_INSTALLED_APPS_RESPONSE:
-                        case API_OPEN_APP_RESPONSE:
-                        case API_OPEN_APP_PROFILE_RESPONSE:
-                        case API_SHOW_TOAST_RESPONSE:
-                        case API_INSERT_DATA_RESPONSE:
-                        case API_GET_DATA_RESPONSE:
-                        case API_OPEN_LINK_RESPONSE:
-                        case API_NOTIFY_RESPONSE:
-                            interceptable = true;
-                            if (self.listeners.get(requestable.id) !== undefined) {
-                                self.listeners.get(requestable.id).onComplete(requestable);
+    init(self) {
+        if (Utility_1.isLoadedInIframe()) {
+            console.log("loaded in iframe ;)");
+            window.onmessage = (event) => {
+                (() => __awaiter(this, void 0, void 0, function* () {
+                    try {
+                        const requestable = JSON.parse(event.data);
+                        if (requestable.id !== undefined &&
+                            requestable.id !== null &&
+                            requestable.api !== undefined &&
+                            requestable.api !== null) {
+                            switch (requestable.api) {
+                                case API_GET_PROFILE_RESPONSE:
+                                case API_CREATE_SHORTCUT_RESPONSE:
+                                case API_GET_EMAIL_RESPONSE:
+                                case API_GET_PHONE_NUMBER_RESPONSE:
+                                case API_GET_CIRCLE_RESPONSE:
+                                case API_MAKE_PAYMENT_RESPONSE:
+                                case API_PUBLISH_RESPONSE:
+                                case API_OPEN_CHAT_RESPONSE:
+                                case API_GET_INSTALLED_APPS_RESPONSE:
+                                case API_OPEN_APP_RESPONSE:
+                                case API_OPEN_APP_PROFILE_RESPONSE:
+                                case API_SHOW_TOAST_RESPONSE:
+                                case API_OPEN_LINK_RESPONSE:
+                                case API_NOTIFY_RESPONSE:
+                                case API_GET_DEVICE_INFO_RESPONSE:
+                                    if (self.listeners.get(requestable.id) !== undefined) {
+                                        self.listeners.get(requestable.id).onComplete(requestable);
+                                    }
+                                    break;
                             }
-                            break;
+                        }
                     }
-                }
-            }
-            catch (error) {
-                window.__SDK_API_log_errors__.push(error);
-            }
-            if (!interceptable) {
-                console._f_logs_.push(Array.from(args));
-                console._f_logger_.apply(console, args);
-            }
-        };
-        // here we should also be setting up the window message listner
-        window.onmessage = (event) => {
-            (() => __awaiter(this, void 0, void 0, function* () {
+                    catch (error) {
+                        console.log(error);
+                    }
+                }))();
+            };
+        }
+        else {
+            console.log("loaded outside iframe ;)");
+            const __famenun_logger__ = console.log;
+            // @ts-ignore: 
+            window.__famenun_logger_logs__ = [];
+            console.log = (...args) => {
+                let interceptable = false;
                 try {
-                    window.__SDK_API_log_messages__.push(event.data);
-                    const requestable = JSON.parse(event.data);
+                    const requestable = JSON.parse(args);
                     if (requestable.id !== undefined &&
                         requestable.id !== null &&
                         requestable.api !== undefined &&
@@ -478,8 +490,11 @@ class RequestHandler {
                             case API_OPEN_APP_RESPONSE:
                             case API_OPEN_APP_PROFILE_RESPONSE:
                             case API_SHOW_TOAST_RESPONSE:
+                            case API_INSERT_DATA_RESPONSE:
+                            case API_GET_DATA_RESPONSE:
                             case API_OPEN_LINK_RESPONSE:
                             case API_NOTIFY_RESPONSE:
+                                interceptable = true;
                                 if (self.listeners.get(requestable.id) !== undefined) {
                                     self.listeners.get(requestable.id).onComplete(requestable);
                                 }
@@ -487,18 +502,25 @@ class RequestHandler {
                         }
                     }
                 }
-                catch (error) {
-                    window.__SDK_API_log_errors__.push(error);
+                catch (error) { }
+                if (!interceptable) {
+                    // @ts-ignore: 
+                    window.__famenun_logger_logs__.push(Array.from(args));
+                    __famenun_logger__.apply(null, args);
                 }
-            }))();
-        };
+            };
+        }
     }
     request(requestable, onRequestCompleteListener) {
         if (onRequestCompleteListener !== undefined) {
             this.listeners.set(requestable.id, onRequestCompleteListener);
         }
-        console.log(JSON.stringify(requestable));
-        window.parent.postMessage(JSON.stringify(requestable), "*");
+        if (Utility_1.isLoadedInIframe()) {
+            window.parent.postMessage(JSON.stringify(requestable), "*");
+        }
+        else {
+            console.log(JSON.stringify(requestable));
+        }
     }
 }
 exports.RequestHandler = RequestHandler;
@@ -520,7 +542,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mapFromObject = (object) => {
+exports.isLoadedInIframe = exports.resolveImage = exports.blobUrlToBase64 = exports.objectFromMap = exports.mapFromObject = void 0;
+const mapFromObject = (object) => {
     const map = new Map();
     if (object !== undefined) {
         for (const key in object) {
@@ -532,14 +555,16 @@ exports.mapFromObject = (object) => {
     }
     return map;
 };
-exports.objectFromMap = (map) => {
+exports.mapFromObject = mapFromObject;
+const objectFromMap = (map) => {
     const object = {};
     map.forEach((value, key) => {
         object[key] = value;
     });
     return object;
 };
-exports.blobUrlToBase64 = (url) => {
+exports.objectFromMap = objectFromMap;
+const blobUrlToBase64 = (url) => {
     return new Promise((resolve, reject) => {
         try {
             var xhr = new XMLHttpRequest();
@@ -560,7 +585,8 @@ exports.blobUrlToBase64 = (url) => {
         }
     });
 };
-exports.resolveImage = (img) => {
+exports.blobUrlToBase64 = blobUrlToBase64;
+const resolveImage = (img) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             if (img.startsWith("data")) {
@@ -583,6 +609,17 @@ exports.resolveImage = (img) => {
         }
     }));
 };
+exports.resolveImage = resolveImage;
+const isLoadedInIframe = () => {
+    try {
+        return window.self !== window.top;
+    }
+    catch (error) {
+        console.log(error);
+        return true;
+    }
+};
+exports.isLoadedInIframe = isLoadedInIframe;
 
 
 /***/ }),
@@ -592,6 +629,7 @@ exports.resolveImage = (img) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ToastHandler = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 class ToastHandler {
     constructor(requestHandler) {
@@ -645,6 +683,7 @@ exports.ToastHandler = ToastHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CircleHandler = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 class CircleHandler {
     constructor(requestHandler) {
@@ -695,6 +734,7 @@ exports.CircleHandler = CircleHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PaymentHandler = exports.Payable = exports.CURRENCY_USD = exports.CURRENCY_INR = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 exports.CURRENCY_INR = "INR";
 exports.CURRENCY_USD = "USD";
@@ -760,6 +800,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PublishHandler = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 const Utility_1 = __webpack_require__(3);
 class PublishHandler {
@@ -819,6 +860,7 @@ exports.PublishHandler = PublishHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ChatroomHandler = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 class ChatroomHandler {
     constructor(requestHandler) {
@@ -870,6 +912,7 @@ exports.ChatroomHandler = ChatroomHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LinkHandler = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 class LinkHandler {
     constructor(requestHandler) {
@@ -960,6 +1003,7 @@ exports.LinkHandler = LinkHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppGalaxyHandler = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 class AppGalaxyHandler {
     constructor(requestHandler) {
@@ -1083,6 +1127,7 @@ exports.AppGalaxyHandler = AppGalaxyHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotificationHandler = exports.Notifiable = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 class Notifiable {
 }
@@ -1137,6 +1182,7 @@ exports.NotificationHandler = NotificationHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HookHandler = exports.FView = void 0;
 class FView {
 }
 exports.FView = FView;
@@ -1326,6 +1372,7 @@ exports.HookHandler = HookHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageHandler = void 0;
 class PageHandler {
     constructor(requestHandler) {
         this.requestHandler = requestHandler;
@@ -1352,6 +1399,64 @@ class PageHandler {
     }
 }
 exports.PageHandler = PageHandler;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DeviceHandler = exports.DeviceInfo = void 0;
+const RequestHandler_1 = __webpack_require__(2);
+class DeviceInfo {
+}
+exports.DeviceInfo = DeviceInfo;
+class DeviceHandler {
+    constructor(requestHandler) {
+        this.requestHandler = requestHandler;
+    }
+    /**
+    * Get basic data about the device on which the app is being used
+    */
+    getDeviceInfo() {
+        return new Promise((resolve, reject) => {
+            var _a, _b;
+            try {
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve({
+                        id: "test_device_id",
+                        ip: "1.2.3.4",
+                        app: "Famenun Web",
+                        os: "Famenun Web OS",
+                        theme: "system",
+                        notificationAccessToken: "test_notification_access_token"
+                    });
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_GET_DEVICE_INFO
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+}
+exports.DeviceHandler = DeviceHandler;
 
 
 /***/ })

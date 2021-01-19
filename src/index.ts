@@ -10,11 +10,19 @@ import { NotificationHandler } from "./handlers/NotificationHandler";
 import { RequestHandler, API_HOOK } from "./handlers/RequestHandler";
 import { HookHandler } from "./handlers/HookHandler";
 import { PageHandler } from "./handlers/PageHandler";
+import { DeviceHandler } from "./handlers/DeviceHandler";
 
 export class Hookable {
     id!: string;
     layout?: string;
     data?: any;
+    
+    resources?: string[];
+    title?: string;
+    action?: string; // code that needs to be run on the action button click
+    actionText?: string; // the text to be shown on the button
+    userPhoto?: string;
+    userName?: string;
 }
 
 export class FamenunApi {
@@ -32,6 +40,8 @@ export class FamenunApi {
     toastHandler?: ToastHandler;
     linkHandler?: LinkHandler;
     notificationHandler?: NotificationHandler;
+    deviceHandler?: DeviceHandler;
+
     hookHandler?: HookHandler;
 
     pageHandler?: PageHandler;
@@ -39,24 +49,33 @@ export class FamenunApi {
 
 export const init = (debug?: boolean): FamenunApi => {
     const requestHandler: RequestHandler = new RequestHandler(debug);
-    return {
-        debug: debug,
 
-        profileHandler: new ProfileHandler(requestHandler),
-        circleHandler: new CircleHandler(requestHandler),
+    // @ts-ignore
+    if(window.__famenun_api__ === undefined){
+        // @ts-ignore
+        window.__famenun_api__ = {
+            debug: debug,
+    
+            profileHandler: new ProfileHandler(requestHandler),
+            circleHandler: new CircleHandler(requestHandler),
+    
+            paymentHandler: new PaymentHandler(requestHandler),
+            publishHandler: new PublishHandler(requestHandler),
+            chatroomHandler: new ChatroomHandler(requestHandler),
+            appGalaxyHandler: new AppGalaxyHandler(requestHandler),
+    
+            toastHandler: new ToastHandler(requestHandler),
+            linkHandler: new LinkHandler(requestHandler),
+            notificationHandler: new NotificationHandler(requestHandler),
+            deviceHandler: new DeviceHandler(requestHandler),
 
-        paymentHandler: new PaymentHandler(requestHandler),
-        publishHandler: new PublishHandler(requestHandler),
-        chatroomHandler: new ChatroomHandler(requestHandler),
-        appGalaxyHandler: new AppGalaxyHandler(requestHandler),
-
-        toastHandler: new ToastHandler(requestHandler),
-        linkHandler: new LinkHandler(requestHandler),
-        notificationHandler: new NotificationHandler(requestHandler),
-        hookHandler: new HookHandler(requestHandler),
-
-        pageHandler: new PageHandler(requestHandler)
-    };
+            hookHandler: new HookHandler(requestHandler),
+    
+            pageHandler: new PageHandler(requestHandler)
+        }
+    }
+    // @ts-ignore
+    return window.__famenun_api__;
 }
 
 export const runWebsite = (website: string) => {

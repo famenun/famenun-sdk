@@ -1,3 +1,4 @@
+import { isLoadedInIframe } from "../utils/Utility";
 
 export const API_GET_PROFILE = "API_GET_PROFILE";
 export const API_CREATE_SHORTCUT = "API_CREATE_SHORTCUT";
@@ -16,6 +17,7 @@ export const API_GET_DATA = "API_GET_DATA";
 export const API_OPEN_LINK = "API_OPEN_LINK";
 export const API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
 export const API_NOTIFY = "API_NOTIFY";
+export const API_GET_DEVICE_INFO = "API_GET_DEVICE_INFO";
 export const API_HOOK = "API_HOOK";
 
 const API_GET_PROFILE_RESPONSE = "API_GET_PROFILE_RESPONSE";
@@ -35,6 +37,7 @@ const API_GET_DATA_RESPONSE = "API_GET_DATA_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
 const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
 const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
+const API_GET_DEVICE_INFO_RESPONSE = "API_GET_DEVICE_INFO_RESPONSE";
 
 export class Requestable {
     id!: string;
@@ -54,64 +57,59 @@ export class RequestHandler {
 
     constructor(public debug?: boolean) {
         try {
-            this.initConsole(this, window, console);
+            this.init(this);
         } catch (error) { }
     }
 
-    private initConsole(self: any, window: any, console: any): void {
-        window.__SDK_API_log_messages__ = [];
-        window.__SDK_API_log_errors__ = [];
-        console._f_logger_ = console.log.bind(console);
-        console._f_logs_ = [];
-        console.log = (...args: any) => {
-            window.__SDK_API_log_messages__.push(args);
-            let interceptable: boolean = false;
-            try {
-                const requestable: Requestable = JSON.parse(args);
-                if (
-                    requestable.id !== undefined &&
-                    requestable.id !== null &&
-                    requestable.api !== undefined &&
-                    requestable.api !== null
-                ) {
-                    switch (requestable.api) {
-                        case API_GET_PROFILE_RESPONSE:
-                        case API_CREATE_SHORTCUT_RESPONSE:
-                        case API_GET_EMAIL_RESPONSE:
-                        case API_GET_PHONE_NUMBER_RESPONSE:
-                        case API_GET_CIRCLE_RESPONSE:
-                        case API_MAKE_PAYMENT_RESPONSE:
-                        case API_PUBLISH_RESPONSE:
-                        case API_OPEN_CHAT_RESPONSE:
-                        case API_GET_INSTALLED_APPS_RESPONSE:
-                        case API_OPEN_APP_RESPONSE:
-                        case API_OPEN_APP_PROFILE_RESPONSE:
-                        case API_SHOW_TOAST_RESPONSE:
-                        case API_INSERT_DATA_RESPONSE:
-                        case API_GET_DATA_RESPONSE:
-                        case API_OPEN_LINK_RESPONSE:
-                        case API_NOTIFY_RESPONSE:
-                            interceptable = true;
-                            if (self.listeners.get(requestable.id) !== undefined) {
-                                self.listeners.get(requestable.id).onComplete(requestable);
+    private init(self: any): void {
+        if (isLoadedInIframe()) {
+            console.log("loaded in iframe ;)");
+            window.onmessage = (event: any) => {
+                (async () => {
+                    try {
+                        const requestable: Requestable = JSON.parse(event.data);
+                        if (
+                            requestable.id !== undefined &&
+                            requestable.id !== null &&
+                            requestable.api !== undefined &&
+                            requestable.api !== null
+                        ) {
+                            switch (requestable.api) {
+                                case API_GET_PROFILE_RESPONSE:
+                                case API_CREATE_SHORTCUT_RESPONSE:
+                                case API_GET_EMAIL_RESPONSE:
+                                case API_GET_PHONE_NUMBER_RESPONSE:
+                                case API_GET_CIRCLE_RESPONSE:
+                                case API_MAKE_PAYMENT_RESPONSE:
+                                case API_PUBLISH_RESPONSE:
+                                case API_OPEN_CHAT_RESPONSE:
+                                case API_GET_INSTALLED_APPS_RESPONSE:
+                                case API_OPEN_APP_RESPONSE:
+                                case API_OPEN_APP_PROFILE_RESPONSE:
+                                case API_SHOW_TOAST_RESPONSE:
+                                case API_OPEN_LINK_RESPONSE:
+                                case API_NOTIFY_RESPONSE:
+                                case API_GET_DEVICE_INFO_RESPONSE:
+                                    if (self.listeners.get(requestable.id) !== undefined) {
+                                        self.listeners.get(requestable.id).onComplete(requestable);
+                                    }
+                                    break;
                             }
-                            break;
+                        }
+                    } catch (error) {
+                        console.log(error);
                     }
-                }
-            } catch (error) {
-                window.__SDK_API_log_errors__.push(error);
-            }
-            if (!interceptable) {
-                console._f_logs_.push(Array.from(args));
-                console._f_logger_.apply(console, args);
-            }
-        };
-        // here we should also be setting up the window message listner
-        window.onmessage = (event: any) => {
-            (async () => {
+                })();
+            };
+        } else {
+            console.log("loaded outside iframe ;)");
+            const __famenun_logger__ = console.log;
+            // @ts-ignore: 
+            window.__famenun_logger_logs__ = [];
+            console.log = (...args: any) => {
+                let interceptable: boolean = false;
                 try {
-                    window.__SDK_API_log_messages__.push(event.data);
-                    const requestable: Requestable = JSON.parse(event.data);
+                    const requestable: Requestable = JSON.parse(args);
                     if (
                         requestable.id !== undefined &&
                         requestable.id !== null &&
@@ -131,27 +129,36 @@ export class RequestHandler {
                             case API_OPEN_APP_RESPONSE:
                             case API_OPEN_APP_PROFILE_RESPONSE:
                             case API_SHOW_TOAST_RESPONSE:
+                            case API_INSERT_DATA_RESPONSE:
+                            case API_GET_DATA_RESPONSE:
                             case API_OPEN_LINK_RESPONSE:
                             case API_NOTIFY_RESPONSE:
+                                interceptable = true;
                                 if (self.listeners.get(requestable.id) !== undefined) {
                                     self.listeners.get(requestable.id).onComplete(requestable);
                                 }
                                 break;
                         }
                     }
-                } catch (error) {
-                    window.__SDK_API_log_errors__.push(error);
+                } catch (error) { }
+                if (!interceptable) {
+                    // @ts-ignore: 
+                    window.__famenun_logger_logs__.push(Array.from(args));
+                    __famenun_logger__.apply(null, args);
                 }
-            })();
-        };
+            }
+        }
     }
 
     request(requestable: Requestable, onRequestCompleteListener?: OnRequestCompleteListener): void {
         if (onRequestCompleteListener !== undefined) {
             this.listeners.set(requestable.id, onRequestCompleteListener);
         }
-        console.log(JSON.stringify(requestable));
-        window.parent.postMessage(JSON.stringify(requestable), "*");
+        if (isLoadedInIframe()) {
+            window.parent.postMessage(JSON.stringify(requestable), "*");
+        } else {
+            console.log(JSON.stringify(requestable));
+        }
     }
 
 }
