@@ -2,8 +2,8 @@ import { Requestable, RequestHandler, API_GET_PROFILE, API_CREATE_SHORTCUT, API_
 import { blobUrlToBase64, resolveImage } from "../utils/Utility";
 
 export class ProfileShortcut {
-    image!: string; // dp of the shortcut
-    name!: string; // name of the shortcut
+    icon!: string; // dp of the shortcut
+    title!: string; // name of the shortcut
     path!: string; // path that must be opened when user clicks the shortcut
 }
 
@@ -53,7 +53,7 @@ export class ProfileHandler {
                 if(this.requestHandler?.debug){
                     resolve();
                 }else{
-                    profileShortcut.image = await resolveImage(profileShortcut.image);
+                    profileShortcut.icon = await resolveImage(profileShortcut.icon);
                     this.requestHandler?.request({
                         id: "request_id",
                         api: API_CREATE_SHORTCUT,

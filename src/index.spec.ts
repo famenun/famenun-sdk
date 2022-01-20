@@ -15,8 +15,8 @@ describe("SDK", () => {
 
         try {
             await api.profileHandler?.createShortcut({
-                image: "https://famenun.com/dp.png",
-                name: "About me",
+                icon: "https://famenun.com/dp.png",
+                title: "About me",
                 path: "./aboutme.html?user=user_uid"
             });
             console.log("shortcut created");
