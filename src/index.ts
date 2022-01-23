@@ -1,15 +1,13 @@
 import { ProfileHandler } from "./handlers/ProfileHandler";
 import { ToastHandler } from "./handlers/ToastHandler";
-import { CircleHandler } from "./handlers/CircleHandler";
-import { PaymentHandler } from "./handlers/PaymentHandler";
-import { PublishHandler } from "./handlers/PublishHandler";
-import { ChatroomHandler } from "./handlers/ChatroomHandler";
-import { LinkHandler } from "./handlers/LinkHandler";
+import { ClubsHandler } from "./handlers/ClubsHandler";
+import { PaymentsHandler } from "./handlers/PaymentsHandler";
+import { BroadcastHandler } from "./handlers/BroadcastHandler";
+import { ChatroomsHandler } from "./handlers/ChatroomsHandler";
+import { LinksHandler } from "./handlers/LinksHandler";
 import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
-import { NotificationHandler } from "./handlers/NotificationHandler";
+import { NotificationsHandler } from "./handlers/NotificationsHandler";
 import { RequestHandler, API_HOOK } from "./handlers/RequestHandler";
-import { HookHandler } from "./handlers/HookHandler";
-import { PageHandler } from "./handlers/PageHandler";
 import { DeviceHandler } from "./handlers/DeviceHandler";
 
 export class Hookable {
@@ -30,21 +28,18 @@ export class FamenunApi {
     debug?: boolean;
 
     profileHandler?: ProfileHandler;
-    circleHandler?: CircleHandler;
+    clubsHandler?: ClubsHandler;
 
-    paymentHandler?: PaymentHandler;
-    publishHandler?: PublishHandler;
-    chatroomHandler?: ChatroomHandler;
+    paymentsHandler?: PaymentsHandler;
+    broadcastHandler?: BroadcastHandler;
+    chatroomsHandler?: ChatroomsHandler;
     appGalaxyHandler?: AppGalaxyHandler;
 
     toastHandler?: ToastHandler;
-    linkHandler?: LinkHandler;
-    notificationHandler?: NotificationHandler;
+    linksHandler?: LinksHandler;
+    notificationsHandler?: NotificationsHandler;
     deviceHandler?: DeviceHandler;
 
-    hookHandler?: HookHandler;
-
-    pageHandler?: PageHandler;
 }
 
 export const init = (debug?: boolean): FamenunApi => {
@@ -57,21 +52,18 @@ export const init = (debug?: boolean): FamenunApi => {
             debug: debug,
     
             profileHandler: new ProfileHandler(requestHandler),
-            circleHandler: new CircleHandler(requestHandler),
+            clubsHandler: new ClubsHandler(requestHandler),
     
-            paymentHandler: new PaymentHandler(requestHandler),
-            publishHandler: new PublishHandler(requestHandler),
-            chatroomHandler: new ChatroomHandler(requestHandler),
+            paymentsHandler: new PaymentsHandler(requestHandler),
+            broadcastHandler: new BroadcastHandler(requestHandler),
+            chatroomsHandler: new ChatroomsHandler(requestHandler),
             appGalaxyHandler: new AppGalaxyHandler(requestHandler),
     
             toastHandler: new ToastHandler(requestHandler),
-            linkHandler: new LinkHandler(requestHandler),
-            notificationHandler: new NotificationHandler(requestHandler),
-            deviceHandler: new DeviceHandler(requestHandler),
+            linksHandler: new LinksHandler(requestHandler),
+            notificationsHandler: new NotificationsHandler(requestHandler),
+            deviceHandler: new DeviceHandler(requestHandler)
 
-            hookHandler: new HookHandler(requestHandler),
-    
-            pageHandler: new PageHandler(requestHandler)
         }
     }
     // @ts-ignore

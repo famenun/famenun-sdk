@@ -7,7 +7,7 @@ export class Notifiable {
     path?: string;
 }
 
-export class NotificationHandler {
+export class NotificationsHandler {
 
     constructor(public requestHandler?: RequestHandler) { }
 

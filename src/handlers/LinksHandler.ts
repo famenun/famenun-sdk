@@ -1,6 +1,6 @@
 import { RequestHandler, Requestable, API_OPEN_LINK, API_CREATE_DEEP_LINK } from "./RequestHandler";
 
-export class LinkHandler {
+export class LinksHandler {
 
     constructor(public requestHandler?: RequestHandler) { }
 

@@ -105,7 +105,7 @@ export class ProfileHandler {
     }
 
     /**
-    * Get verified email access token
+    * Get verified mobile number access token
     */
     getPhoneNumberAccessToken(): Promise<any> {
         return new Promise((resolve, reject) => {

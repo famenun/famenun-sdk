@@ -201,7 +201,7 @@
         function getCircle() {
             setTimeout(async() => {
                 try {
-                    const circle = await api.circleHandler.getCircle();
+                    const circle = await api.clubsHandler.getCircle();
                     console.log(`circle : ${JSON.stringify(circle)}`);
                 } catch (error) {
                     console.log(error);
@@ -212,7 +212,7 @@
         function openChat() {
             setTimeout(async() => {
                 try {
-                    await api.chatroomHandler.openChat(uid, uid);
+                    await api.chatroomsHandler.openChat(uid, uid);
                     console.log(`chat opened :>`);
                 } catch (error) {
                     console.log(error);
@@ -256,7 +256,7 @@
         function makePayment() {
             setTimeout(async() => {
                 try {
-                    await api.paymentHandler.makePayment({
+                    await api.paymentsHandler.makePayment({
                         referenceId: "txn_id",
                         currency: "INR",
                         amount: 21,
@@ -273,7 +273,7 @@
         function publsh() {
             setTimeout(async() => {
                 try {
-                    await api.publishHandler.publish(files);
+                    await api.broadcastHandler.publish(files);
                     console.log(`broadcast done :>`);
                 } catch (error) {
                     console.log(error);
@@ -284,7 +284,7 @@
         function openLink() {
             setTimeout(async() => {
                 try {
-                    await api.linkHandler.openLink("https://legal.famenun.com/policies");
+                    await api.linksHandler.openLink("https://legal.famenun.com/policies");
                     console.log("link opened");
                 } catch (error) {
                     console.log(error);
@@ -295,7 +295,7 @@
         function createDeepLink() {
             setTimeout(async() => {
                 try {
-                    const link = await api.linkHandler.createDeepLink("./index.html?user=user_uid");
+                    const link = await api.linksHandler.createDeepLink("./index.html?user=user_uid");
                     console.log("link : " + link);
                 } catch (error) {
                     console.log(error);
@@ -306,7 +306,7 @@
         function notify() {
             setTimeout(async() => {
                 try {
-                    await api.notificationHandler.notify({
+                    await api.notificationsHandler.notify({
                         title: "this is notification title",
                         image: "https://thumbor.forbes.com/thumbor/fit-in/416x416/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F5c76b7d331358e35dd2773a9%2F0x0.jpg%3Fbackground%3D000000%26cropX1%3D0%26cropX2%3D4401%26cropY1%3D0%26cropY2%3D4401"
                     });

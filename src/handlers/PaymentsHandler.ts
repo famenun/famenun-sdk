@@ -1,28 +1,40 @@
-import { RequestHandler, Requestable, API_GET_CIRCLE } from "./RequestHandler";
+import { RequestHandler, Requestable, API_MAKE_PAYMENT } from "./RequestHandler";
 
-export class CircleHandler {
+export const CURRENCY_INR = "INR";
+export const CURRENCY_USD = "USD";
+
+export class Payable {
+    referenceId?: string;
+    currency?: string;
+    amount?: number;
+    to?: string;
+    note?: string; 
+}
+
+export class PaymentsHandler {
     
     constructor(public requestHandler?: RequestHandler) { }
 
     /**
-    * Show prompt to user to get his circle
+    * Show prompt to user to make payment
+    *
+    * @param payable - The object with payment data
+    *
     */
-    getCircle(): Promise<any> {
+    makePayment(payable: Payable): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){
-                    resolve([
-                        "friend_uid_01",
-                        "friend_uid_02"
-                    ]);
+                    resolve();
                 }else{
                     this.requestHandler?.request({
                         id: "request_id",
-                        api: API_GET_CIRCLE
+                        api: API_MAKE_PAYMENT,
+                        data: payable
                     }, {
                         onComplete(requestable: Requestable): void {
                             if(!requestable.error){
-                                resolve(requestable.data);
+                                resolve();
                             }else{
                                 reject(requestable.message);
                             }

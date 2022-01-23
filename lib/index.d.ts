@@ -1,14 +1,12 @@
 import { ProfileHandler } from "./handlers/ProfileHandler";
 import { ToastHandler } from "./handlers/ToastHandler";
-import { CircleHandler } from "./handlers/CircleHandler";
-import { PaymentHandler } from "./handlers/PaymentHandler";
-import { PublishHandler } from "./handlers/PublishHandler";
-import { ChatroomHandler } from "./handlers/ChatroomHandler";
-import { LinkHandler } from "./handlers/LinkHandler";
+import { ClubsHandler } from "./handlers/ClubsHandler";
+import { PaymentsHandler } from "./handlers/PaymentsHandler";
+import { BroadcastHandler } from "./handlers/BroadcastHandler";
+import { ChatroomsHandler } from "./handlers/ChatroomsHandler";
+import { LinksHandler } from "./handlers/LinksHandler";
 import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
-import { NotificationHandler } from "./handlers/NotificationHandler";
-import { HookHandler } from "./handlers/HookHandler";
-import { PageHandler } from "./handlers/PageHandler";
+import { NotificationsHandler } from "./handlers/NotificationsHandler";
 import { DeviceHandler } from "./handlers/DeviceHandler";
 export declare class Hookable {
     id: string;
@@ -25,17 +23,15 @@ export declare class FamenunApi {
     appId?: string;
     debug?: boolean;
     profileHandler?: ProfileHandler;
-    circleHandler?: CircleHandler;
-    paymentHandler?: PaymentHandler;
-    publishHandler?: PublishHandler;
-    chatroomHandler?: ChatroomHandler;
+    clubsHandler?: ClubsHandler;
+    paymentsHandler?: PaymentsHandler;
+    broadcastHandler?: BroadcastHandler;
+    chatroomsHandler?: ChatroomsHandler;
     appGalaxyHandler?: AppGalaxyHandler;
     toastHandler?: ToastHandler;
-    linkHandler?: LinkHandler;
-    notificationHandler?: NotificationHandler;
+    linksHandler?: LinksHandler;
+    notificationsHandler?: NotificationsHandler;
     deviceHandler?: DeviceHandler;
-    hookHandler?: HookHandler;
-    pageHandler?: PageHandler;
 }
 export declare const init: (debug?: boolean | undefined) => FamenunApi;
 export declare const runWebsite: (website: string) => void;

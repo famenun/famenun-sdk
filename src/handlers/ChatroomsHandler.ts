@@ -1,6 +1,6 @@
 import { RequestHandler, Requestable, API_OPEN_CHAT } from "./RequestHandler";
 
-export class ChatroomHandler {
+export class ChatroomsHandler {
     
     constructor(public requestHandler?: RequestHandler) { }
 

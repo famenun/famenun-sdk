@@ -1,40 +1,28 @@
-import { RequestHandler, Requestable, API_MAKE_PAYMENT } from "./RequestHandler";
+import { RequestHandler, Requestable, API_GET_CLUB } from "./RequestHandler";
 
-export const CURRENCY_INR = "INR";
-export const CURRENCY_USD = "USD";
-
-export class Payable {
-    referenceId?: string;
-    currency?: string;
-    amount?: number;
-    to?: string;
-    note?: string; 
-}
-
-export class PaymentHandler {
+export class ClubsHandler {
     
     constructor(public requestHandler?: RequestHandler) { }
 
     /**
-    * Show prompt to user to make payment
-    *
-    * @param payable - The object with payment data
-    *
+    * Show prompt to user to get his circle
     */
-    makePayment(payable: Payable): Promise<void> {
+    getClub(): Promise<string[]> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){
-                    resolve();
+                    resolve([
+                        "friend_uid_01",
+                        "friend_uid_02"
+                    ]);
                 }else{
                     this.requestHandler?.request({
                         id: "request_id",
-                        api: API_MAKE_PAYMENT,
-                        data: payable
+                        api: API_GET_CLUB
                     }, {
                         onComplete(requestable: Requestable): void {
                             if(!requestable.error){
-                                resolve();
+                                resolve(requestable.data);
                             }else{
                                 reject(requestable.message);
                             }

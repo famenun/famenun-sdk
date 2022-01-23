@@ -4,16 +4,12 @@ export const API_GET_PROFILE = "API_GET_PROFILE";
 export const API_CREATE_SHORTCUT = "API_CREATE_SHORTCUT";
 export const API_GET_EMAIL = "API_GET_EMAIL";
 export const API_GET_PHONE_NUMBER = "API_GET_PHONE_NUMBER";
-export const API_GET_CIRCLE = "API_GET_CIRCLE";
+export const API_GET_CLUB = "API_GET_CLUB";
 export const API_MAKE_PAYMENT = "API_MAKE_PAYMENT";
-export const API_PUBLISH = "API_PUBLISH";
+export const API_BROADCAST = "API_BROADCAST";
 export const API_OPEN_CHAT = "API_OPEN_CHAT";
-export const API_GET_INSTALLED_APPS = "API_GET_INSTALLED_APPS";
 export const API_OPEN_APP = "API_OPEN_APP";
-export const API_OPEN_APP_PROFILE = "API_OPEN_APP_PROFILE";
 export const API_SHOW_TOAST = "API_SHOW_TOAST";
-export const API_INSERT_DATA = "API_INSERT_DATA";
-export const API_GET_DATA = "API_GET_DATA";
 export const API_OPEN_LINK = "API_OPEN_LINK";
 export const API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
 export const API_NOTIFY = "API_NOTIFY";
@@ -24,9 +20,9 @@ const API_GET_PROFILE_RESPONSE = "API_GET_PROFILE_RESPONSE";
 const API_CREATE_SHORTCUT_RESPONSE = "API_CREATE_SHORTCUT_RESPONSE";
 const API_GET_EMAIL_RESPONSE = "API_GET_EMAIL_RESPONSE";
 const API_GET_PHONE_NUMBER_RESPONSE = "API_GET_PHONE_NUMBER_RESPONSE";
-const API_GET_CIRCLE_RESPONSE = "API_GET_CIRCLE_RESPONSE";
+const API_GET_CLUB_RESPONSE = "API_GET_CLUB_RESPONSE";
 const API_MAKE_PAYMENT_RESPONSE = "API_MAKE_PAYMENT_RESPONSE";
-const API_PUBLISH_RESPONSE = "API_PUBLISH_RESPONSE";
+const API_BROADCAST_RESPONSE = "API_BROADCAST_RESPONSE";
 const API_OPEN_CHAT_RESPONSE = "API_OPEN_CHAT_RESPONSE";
 const API_GET_INSTALLED_APPS_RESPONSE = "API_GET_INSTALLED_APPS_RESPONSE";
 const API_OPEN_APP_RESPONSE = "API_OPEN_APP_RESPONSE";
@@ -79,9 +75,9 @@ export class RequestHandler {
                                 case API_CREATE_SHORTCUT_RESPONSE:
                                 case API_GET_EMAIL_RESPONSE:
                                 case API_GET_PHONE_NUMBER_RESPONSE:
-                                case API_GET_CIRCLE_RESPONSE:
+                                case API_GET_CLUB_RESPONSE:
                                 case API_MAKE_PAYMENT_RESPONSE:
-                                case API_PUBLISH_RESPONSE:
+                                case API_BROADCAST_RESPONSE:
                                 case API_OPEN_CHAT_RESPONSE:
                                 case API_GET_INSTALLED_APPS_RESPONSE:
                                 case API_OPEN_APP_RESPONSE:
@@ -121,9 +117,9 @@ export class RequestHandler {
                             case API_CREATE_SHORTCUT_RESPONSE:
                             case API_GET_EMAIL_RESPONSE:
                             case API_GET_PHONE_NUMBER_RESPONSE:
-                            case API_GET_CIRCLE_RESPONSE:
+                            case API_GET_CLUB_RESPONSE:
                             case API_MAKE_PAYMENT_RESPONSE:
-                            case API_PUBLISH_RESPONSE:
+                            case API_BROADCAST_RESPONSE:
                             case API_OPEN_CHAT_RESPONSE:
                             case API_GET_INSTALLED_APPS_RESPONSE:
                             case API_OPEN_APP_RESPONSE:

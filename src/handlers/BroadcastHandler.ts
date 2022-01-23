@@ -1,17 +1,17 @@
-import { RequestHandler, Requestable, API_PUBLISH } from "./RequestHandler";
+import { RequestHandler, Requestable, API_BROADCAST } from "./RequestHandler";
 import { blobUrlToBase64 } from "../utils/Utility";
 
-export class PublishHandler {
+export class BroadcastHandler {
 
     constructor(public requestHandler?: RequestHandler) { }
 
     /**
-    * Prompt user to publish broadcast
+    * Prompt user to broadcast
     *
-    * @param files - files to be published
+    * @param files - files to be broadcasted
     *
     */
-    publish(files: Array<string>): Promise<void> {
+    broadcast(files: Array<string>): Promise<void> {
         return new Promise(async (resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){
@@ -24,7 +24,7 @@ export class PublishHandler {
                     const result = await Promise.all(promises);
                     this.requestHandler?.request({
                         id: "request_id",
-                        api: API_PUBLISH,
+                        api: API_BROADCAST,
                         data: {
                             files: result
                         }
