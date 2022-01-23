@@ -84,6 +84,7 @@ export class RequestHandler {
                                 case API_OPEN_APP_PROFILE_RESPONSE:
                                 case API_SHOW_TOAST_RESPONSE:
                                 case API_OPEN_LINK_RESPONSE:
+                                case API_CREATE_DEEP_LINK_RESPONSE:
                                 case API_NOTIFY_RESPONSE:
                                 case API_GET_DEVICE_INFO_RESPONSE:
                                     if (self.listeners.get(requestable.id) !== undefined) {
@@ -128,6 +129,7 @@ export class RequestHandler {
                             case API_INSERT_DATA_RESPONSE:
                             case API_GET_DATA_RESPONSE:
                             case API_OPEN_LINK_RESPONSE:
+                            case API_CREATE_DEEP_LINK_RESPONSE:
                             case API_NOTIFY_RESPONSE:
                                 interceptable = true;
                                 if (self.listeners.get(requestable.id) !== undefined) {
