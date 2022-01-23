@@ -94,7 +94,9 @@ describe("SDK", () => {
         }
         
         try {
-            const link = await api.linksHandler?.createDeepLink("./index.html?user=user_uid");
+            const link = await api.linksHandler?.createDeepLink({
+                path: "./index.html?user=user_uid"
+            });
             console.log("link : " + link);
         } catch (error) {
             console.log(error);

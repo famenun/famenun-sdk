@@ -1,5 +1,12 @@
 import { RequestHandler, Requestable, API_OPEN_LINK, API_CREATE_DEEP_LINK } from "./RequestHandler";
 
+export class Linkable {
+    title?: string;
+    description?: string;
+    image?: string;
+    path!: string;
+}
+
 export class LinksHandler {
 
     constructor(public requestHandler?: RequestHandler) { }
@@ -44,7 +51,7 @@ export class LinksHandler {
     * @param path - the path of your app that ll be opened on click
     *
     */
-    createDeepLink(path: string): Promise<string> {
+    createDeepLink(linkable: Linkable): Promise<string> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){
@@ -53,9 +60,7 @@ export class LinksHandler {
                     this.requestHandler?.request({
                         id: "request_id",
                         api: API_CREATE_DEEP_LINK,
-                        data: {
-                            path: path
-                        }
+                        data: linkable
                     }, {
                         onComplete(requestable: Requestable): void {
                             if(!requestable.error){

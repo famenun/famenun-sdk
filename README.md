@@ -30,14 +30,14 @@ $ npm i @famenun/sdk
 
 **While using through NPM**
 ```
-import * as SDK from "famenun/sdk"
-const api = SDK.init("your app id", true); // pass true in debug mode
+import * as SDK from "@famenun/sdk"
+const api = SDK.init(true); // optional to pass boolean | true for debug mode
 ```
 **While using though js file**
 ```
 <script src="./famenun_sdk.js"></script>
 <script>
-        const api = __famenun__.init("your app id");
+        const api = __famenun__.init(true); // optional to pass boolean | true for debug mode
 </script>
 ```
 
@@ -48,14 +48,14 @@ For now Famenun-CLI supports the following commands and we have plans to cover m
 | API | Usuage |
 | ------ | ------ |
 | **AppGalaxyHandler** | operations releated to famenun apps galaxy |
-| **ChatroomHandler** | Start chat with someone  |
-| **CircleHandler** | Get user circle |
-| **DatabaseHandler** | I/O key value pairs  |
-| **LinkHandler** | handle links related oprations  |
-| **NotificationHandler** | send notifications to user  |
-| **PaymentHandler** | Generate payment request  |
-| **ProfileHandler** | Get user profile and add shortcut to their profile |
-| **PublishHandler** | Generate publish request  |
+| **BroadcastHandler** | Generate broadcast request  |
+| **ChatroomsHandler** | Start chat with someone  |
+| **ClubsHandler** | Get user club info |
+| **DeviceHandler** | get user device info  |
+| **LinksHandler** | open link or generate deeplink  |
+| **NotificationsHandler** | send notifications to user  |
+| **PaymentsHandler** | Generate payment request  |
+| **ProfileHandler** | Get user profile info and add shortcut to their profile |
 | **ToastHandler** | Show some message to the user  |
 
 ### Development
