@@ -17,7 +17,8 @@ describe("SDK", () => {
             await api.profileHandler?.createShortcut({
                 icon: "https://famenun.com/dp.png",
                 title: "About me",
-                path: "./aboutme.html?user=user_uid"
+                info: "Click to know more about me",
+                path: "./aboutme.html?user={uid}"
             });
             console.log("shortcut created");
         } catch (error) {
@@ -59,7 +60,9 @@ describe("SDK", () => {
         }
 
         try {
-            await api.broadcastHandler?.broadcast(["file://some/file/path"]);
+            await api.broadcastHandler?.broadcast({
+                files: ["file://some/file/path"]
+            });
             console.log("broadcast made");
         } catch (error) {
             console.log(error);
@@ -73,7 +76,9 @@ describe("SDK", () => {
         }
 
         try {
-            await api.appGalaxyHandler?.openApp("test_app");
+            await api.appGalaxyHandler?.openApp({
+                appId: "test_app"
+            });
             console.log("app opened");
         } catch (error) {
             console.log(error);

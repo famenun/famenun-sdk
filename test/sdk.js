@@ -399,7 +399,6 @@ const API_OPEN_APP_RESPONSE = "API_OPEN_APP_RESPONSE";
 const API_OPEN_APP_PROFILE_RESPONSE = "API_OPEN_APP_PROFILE_RESPONSE";
 const API_SHOW_TOAST_RESPONSE = "API_SHOW_TOAST_RESPONSE";
 const API_INSERT_DATA_RESPONSE = "API_INSERT_DATA_RESPONSE";
-const API_GET_DATA_RESPONSE = "API_GET_DATA_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
 const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
 const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
@@ -423,10 +422,7 @@ class RequestHandler {
                 (() => __awaiter(this, void 0, void 0, function* () {
                     try {
                         const requestable = JSON.parse(event.data);
-                        if (requestable.id !== undefined &&
-                            requestable.id !== null &&
-                            requestable.api !== undefined &&
-                            requestable.api !== null) {
+                        if (requestable.id && requestable.api) {
                             switch (requestable.api) {
                                 case API_GET_PROFILE_RESPONSE:
                                 case API_CREATE_SHORTCUT_RESPONSE:
@@ -466,10 +462,7 @@ class RequestHandler {
                 let interceptable = false;
                 try {
                     const requestable = JSON.parse(args);
-                    if (requestable.id !== undefined &&
-                        requestable.id !== null &&
-                        requestable.api !== undefined &&
-                        requestable.api !== null) {
+                    if (requestable.id && requestable.api) {
                         switch (requestable.api) {
                             case API_GET_PROFILE_RESPONSE:
                             case API_CREATE_SHORTCUT_RESPONSE:
@@ -484,7 +477,6 @@ class RequestHandler {
                             case API_OPEN_APP_PROFILE_RESPONSE:
                             case API_SHOW_TOAST_RESPONSE:
                             case API_INSERT_DATA_RESPONSE:
-                            case API_GET_DATA_RESPONSE:
                             case API_OPEN_LINK_RESPONSE:
                             case API_CREATE_DEEP_LINK_RESPONSE:
                             case API_NOTIFY_RESPONSE:
@@ -794,9 +786,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BroadcastHandler = void 0;
+exports.BroadcastHandler = exports.Broadcastable = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 const Utility_1 = __webpack_require__(3);
+class Broadcastable {
+}
+exports.Broadcastable = Broadcastable;
 class BroadcastHandler {
     constructor(requestHandler) {
         this.requestHandler = requestHandler;
@@ -804,10 +799,10 @@ class BroadcastHandler {
     /**
     * Prompt user to broadcast
     *
-    * @param files - files to be broadcasted
+    * @param broadcastable - object containg info about the broadcast files and description
     *
     */
-    broadcast(files) {
+    broadcast(broadcastable) {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b;
             try {
@@ -816,16 +811,14 @@ class BroadcastHandler {
                 }
                 else {
                     const promises = new Array();
-                    for (const file of files) {
+                    for (const file of broadcastable.files) {
                         promises.push((0, Utility_1.blobUrlToBase64)(file));
                     }
-                    const result = yield Promise.all(promises);
+                    broadcastable.files = yield Promise.all(promises);
                     (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
                         id: "request_id",
                         api: RequestHandler_1.API_BROADCAST,
-                        data: {
-                            files: result
-                        }
+                        data: broadcastable
                     }, {
                         onComplete(requestable) {
                             if (!requestable.error) {
@@ -998,17 +991,20 @@ exports.LinksHandler = LinksHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppGalaxyHandler = void 0;
+exports.AppGalaxyHandler = exports.Openable = void 0;
 const RequestHandler_1 = __webpack_require__(2);
+class Openable {
+}
+exports.Openable = Openable;
 class AppGalaxyHandler {
     constructor(requestHandler) {
         this.requestHandler = requestHandler;
     }
     /**
     * Open app
-    * @param app is the id of the app to be opened
+    * @param openable is the config object containing app id and the path needs to be opened
     */
-    openApp(app) {
+    openApp(openable) {
         return new Promise((resolve, reject) => {
             var _a, _b;
             try {
@@ -1019,9 +1015,7 @@ class AppGalaxyHandler {
                     (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
                         id: "request_id",
                         api: RequestHandler_1.API_OPEN_APP,
-                        data: {
-                            app: app
-                        }
+                        data: openable
                     }, {
                         onComplete(requestable) {
                             if (!requestable.error) {

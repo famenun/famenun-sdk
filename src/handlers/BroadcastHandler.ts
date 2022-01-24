@@ -1,6 +1,11 @@
 import { RequestHandler, Requestable, API_BROADCAST } from "./RequestHandler";
 import { blobUrlToBase64 } from "../utils/Utility";
 
+export class Broadcastable {
+    text?: string; // description text in the broadcast
+    files!: string[]; // files urls [can be blob-urls or remote-urls]
+}
+
 export class BroadcastHandler {
 
     constructor(public requestHandler?: RequestHandler) { }
@@ -8,26 +13,24 @@ export class BroadcastHandler {
     /**
     * Prompt user to broadcast
     *
-    * @param files - files to be broadcasted
+    * @param broadcastable - object containg info about the broadcast files and description
     *
     */
-    broadcast(files: Array<string>): Promise<void> {
+    broadcast(broadcastable: Broadcastable): Promise<void> {
         return new Promise(async (resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){
                     resolve();
                 }else{
                     const promises = new Array();
-                    for(const file of files){
+                    for(const file of broadcastable.files){
                         promises.push(blobUrlToBase64(file));
                     }
-                    const result = await Promise.all(promises);
+                    broadcastable.files = await Promise.all(promises);
                     this.requestHandler?.request({
                         id: "request_id",
                         api: API_BROADCAST,
-                        data: {
-                            files: result
-                        }
+                        data: broadcastable
                     }, {
                         onComplete(requestable: Requestable): void {
                             if(!requestable.error){

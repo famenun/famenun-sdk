@@ -4,6 +4,7 @@ import { blobUrlToBase64, resolveImage } from "../utils/Utility";
 export class ProfileShortcut {
     icon!: string; // dp of the shortcut
     title!: string; // name of the shortcut
+    info!: string; // short helpful description about the shortcut functionality | not more than 51 chars
     path!: string; // path that must be opened when user clicks the shortcut
 }
 

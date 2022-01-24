@@ -1,14 +1,19 @@
 import { RequestHandler, Requestable, API_OPEN_APP } from "./RequestHandler";
 
+export class Openable {
+    appId!: string; // app id
+    path?: string; // path needs to be opened
+}
+
 export class AppGalaxyHandler {
 
     constructor(public requestHandler?: RequestHandler) { }
 
     /**
     * Open app
-    * @param app is the id of the app to be opened
+    * @param openable is the config object containing app id and the path needs to be opened
     */
-    openApp(app: string): Promise<void> {
+    openApp(openable: Openable): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){
@@ -17,9 +22,7 @@ export class AppGalaxyHandler {
                     this.requestHandler?.request({
                         id: "request_id",
                         api: API_OPEN_APP,
-                        data: {
-                            app: app
-                        }
+                        data: openable
                     }, {
                         onComplete(requestable: Requestable): void {
                             if(!requestable.error){

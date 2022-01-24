@@ -246,7 +246,9 @@
         function openApp() {
             setTimeout(async() => {
                 try {
-                    await api.appGalaxyHandler.openApp("test_app");
+                    await api.appGalaxyHandler.openApp({
+                        appId: "test_app"
+                    });
                     console.log("app opened");
                 } catch (error) {
                     console.log(error);
@@ -257,7 +259,9 @@
         function broadcast() {
             setTimeout(async() => {
                 try {
-                    await api.broadcastHandler.broadcast(files);
+                    await api.broadcastHandler.broadcast({
+                        files: files
+                    });
                     console.log(`broadcast done :>`);
                 } catch (error) {
                     console.log(error);
@@ -358,7 +362,7 @@
                 try {
                     const profile = await api.profileHandler.getProfile();
                     console.log(`profile : ${JSON.stringify(profile)}`);
-                    uid = profile.uId;
+                    uid = profile.id;
                     document.getElementById("dp").setAttribute("src", profile.dp);
                     document.getElementById("name").innerText = profile.name;
                 } catch (error) {
@@ -372,9 +376,10 @@
                 try {
                     await api.profileHandler.createShortcut({
                         // image: files[0],
-                        image: "icon.png",
+                        image: "./icon.png",
                         name: "Test",
-                        path: "./index.html?user=usr_uid"
+                        info: "This is test info about the shortcut",
+                        path: "./index.html?user={uid}"
                     });
                     console.log("profile shortcut created")
                 } catch (error) {

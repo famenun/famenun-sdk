@@ -29,7 +29,6 @@ const API_OPEN_APP_RESPONSE = "API_OPEN_APP_RESPONSE";
 const API_OPEN_APP_PROFILE_RESPONSE = "API_OPEN_APP_PROFILE_RESPONSE";
 const API_SHOW_TOAST_RESPONSE = "API_SHOW_TOAST_RESPONSE";
 const API_INSERT_DATA_RESPONSE = "API_INSERT_DATA_RESPONSE";
-const API_GET_DATA_RESPONSE = "API_GET_DATA_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
 const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
 const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
@@ -64,12 +63,7 @@ export class RequestHandler {
                 (async () => {
                     try {
                         const requestable: Requestable = JSON.parse(event.data);
-                        if (
-                            requestable.id !== undefined &&
-                            requestable.id !== null &&
-                            requestable.api !== undefined &&
-                            requestable.api !== null
-                        ) {
+                        if (requestable.id && requestable.api) {
                             switch (requestable.api) {
                                 case API_GET_PROFILE_RESPONSE:
                                 case API_CREATE_SHORTCUT_RESPONSE:
@@ -107,12 +101,7 @@ export class RequestHandler {
                 let interceptable: boolean = false;
                 try {
                     const requestable: Requestable = JSON.parse(args);
-                    if (
-                        requestable.id !== undefined &&
-                        requestable.id !== null &&
-                        requestable.api !== undefined &&
-                        requestable.api !== null
-                    ) {
+                    if (requestable.id && requestable.api) {
                         switch (requestable.api) {
                             case API_GET_PROFILE_RESPONSE:
                             case API_CREATE_SHORTCUT_RESPONSE:
@@ -127,7 +116,6 @@ export class RequestHandler {
                             case API_OPEN_APP_PROFILE_RESPONSE:
                             case API_SHOW_TOAST_RESPONSE:
                             case API_INSERT_DATA_RESPONSE:
-                            case API_GET_DATA_RESPONSE:
                             case API_OPEN_LINK_RESPONSE:
                             case API_CREATE_DEEP_LINK_RESPONSE:
                             case API_NOTIFY_RESPONSE:
@@ -138,7 +126,7 @@ export class RequestHandler {
                                 break;
                         }
                     }
-                } catch (error) { }
+                } catch (error) {  }
                 if (!interceptable) {
                     // @ts-ignore: 
                     window.__famenun_logger_logs__.push(Array.from(args));
