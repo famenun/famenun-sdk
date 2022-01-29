@@ -112,10 +112,15 @@ export const runWebsite = (website: string) => {
                     data: emitable
                 });
             },
-            registerHook: (code: string) => {
-                var script = document.createElement("script");
-                script.innerHTML = decodeURIComponent(code);
-                document.body.append(script);
+            registerHook: (url: string) => {
+                fetch(url)
+                .then(res => res.text())
+                .then(code => {
+                    var script = document.createElement("script");
+                    script.innerHTML = decodeURIComponent(code);
+                    document.body.append(script);
+                })
+                .catch(console.error);
             },
             runWebsite: runWebsite
         };

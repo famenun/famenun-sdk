@@ -172,10 +172,15 @@ exports.runWebsite = runWebsite;
                     data: emitable
                 });
             },
-            registerHook: (code) => {
-                var script = document.createElement("script");
-                script.innerHTML = decodeURIComponent(code);
-                document.body.append(script);
+            registerHook: (url) => {
+                fetch(url)
+                    .then(res => res.text())
+                    .then(code => {
+                    var script = document.createElement("script");
+                    script.innerHTML = decodeURIComponent(code);
+                    document.body.append(script);
+                })
+                    .catch(console.error);
             },
             runWebsite: exports.runWebsite
         };
@@ -369,40 +374,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestHandler = exports.Requestable = exports.API_HOOK = exports.API_GET_DEVICE_INFO = exports.API_NOTIFY = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_SHOW_TOAST = exports.API_OPEN_APP = exports.API_OPEN_CHAT = exports.API_BROADCAST = exports.API_MAKE_PAYMENT = exports.API_GET_CLUB = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = void 0;
+exports.RequestHandler = exports.Requestable = exports.API_HOOK = exports.API_SHOW_TOAST = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = exports.API_MAKE_PAYMENT = exports.API_NOTIFY = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_GET_DEVICE_INFO = exports.API_GET_CLUB = exports.API_OPEN_CHAT = exports.API_BROADCAST = exports.API_OPEN_APP = void 0;
 const Utility_1 = __webpack_require__(3);
+exports.API_OPEN_APP = "API_OPEN_APP";
+exports.API_BROADCAST = "API_BROADCAST";
+exports.API_OPEN_CHAT = "API_OPEN_CHAT";
+exports.API_GET_CLUB = "API_GET_CLUB";
+exports.API_GET_DEVICE_INFO = "API_GET_DEVICE_INFO";
+exports.API_OPEN_LINK = "API_OPEN_LINK";
+exports.API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
+exports.API_NOTIFY = "API_NOTIFY";
+exports.API_MAKE_PAYMENT = "API_MAKE_PAYMENT";
 exports.API_GET_PROFILE = "API_GET_PROFILE";
 exports.API_CREATE_SHORTCUT = "API_CREATE_SHORTCUT";
 exports.API_GET_EMAIL = "API_GET_EMAIL";
 exports.API_GET_PHONE_NUMBER = "API_GET_PHONE_NUMBER";
-exports.API_GET_CLUB = "API_GET_CLUB";
-exports.API_MAKE_PAYMENT = "API_MAKE_PAYMENT";
-exports.API_BROADCAST = "API_BROADCAST";
-exports.API_OPEN_CHAT = "API_OPEN_CHAT";
-exports.API_OPEN_APP = "API_OPEN_APP";
 exports.API_SHOW_TOAST = "API_SHOW_TOAST";
-exports.API_OPEN_LINK = "API_OPEN_LINK";
-exports.API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
-exports.API_NOTIFY = "API_NOTIFY";
-exports.API_GET_DEVICE_INFO = "API_GET_DEVICE_INFO";
 exports.API_HOOK = "API_HOOK";
+const API_OPEN_APP_RESPONSE = "API_OPEN_APP_RESPONSE";
+const API_BROADCAST_RESPONSE = "API_BROADCAST_RESPONSE";
+const API_OPEN_CHAT_RESPONSE = "API_OPEN_CHAT_RESPONSE";
+const API_GET_CLUB_RESPONSE = "API_GET_CLUB_RESPONSE";
+const API_GET_DEVICE_INFO_RESPONSE = "API_GET_DEVICE_INFO_RESPONSE";
+const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
+const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
+const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
+const API_MAKE_PAYMENT_RESPONSE = "API_MAKE_PAYMENT_RESPONSE";
 const API_GET_PROFILE_RESPONSE = "API_GET_PROFILE_RESPONSE";
 const API_CREATE_SHORTCUT_RESPONSE = "API_CREATE_SHORTCUT_RESPONSE";
 const API_GET_EMAIL_RESPONSE = "API_GET_EMAIL_RESPONSE";
 const API_GET_PHONE_NUMBER_RESPONSE = "API_GET_PHONE_NUMBER_RESPONSE";
-const API_GET_CLUB_RESPONSE = "API_GET_CLUB_RESPONSE";
-const API_MAKE_PAYMENT_RESPONSE = "API_MAKE_PAYMENT_RESPONSE";
-const API_BROADCAST_RESPONSE = "API_BROADCAST_RESPONSE";
-const API_OPEN_CHAT_RESPONSE = "API_OPEN_CHAT_RESPONSE";
-const API_GET_INSTALLED_APPS_RESPONSE = "API_GET_INSTALLED_APPS_RESPONSE";
-const API_OPEN_APP_RESPONSE = "API_OPEN_APP_RESPONSE";
-const API_OPEN_APP_PROFILE_RESPONSE = "API_OPEN_APP_PROFILE_RESPONSE";
 const API_SHOW_TOAST_RESPONSE = "API_SHOW_TOAST_RESPONSE";
-const API_INSERT_DATA_RESPONSE = "API_INSERT_DATA_RESPONSE";
-const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
-const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
-const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
-const API_GET_DEVICE_INFO_RESPONSE = "API_GET_DEVICE_INFO_RESPONSE";
+const API_HOOK_RESPONSE = "API_HOOK_RESPONSE";
 class Requestable {
 }
 exports.Requestable = Requestable;
@@ -424,22 +427,21 @@ class RequestHandler {
                         const requestable = JSON.parse(event.data);
                         if (requestable.id && requestable.api) {
                             switch (requestable.api) {
+                                case API_OPEN_APP_RESPONSE:
+                                case API_BROADCAST_RESPONSE:
+                                case API_OPEN_CHAT_RESPONSE:
+                                case API_GET_CLUB_RESPONSE:
+                                case API_GET_DEVICE_INFO_RESPONSE:
+                                case API_OPEN_LINK_RESPONSE:
+                                case API_CREATE_DEEP_LINK_RESPONSE:
+                                case API_NOTIFY_RESPONSE:
+                                case API_MAKE_PAYMENT_RESPONSE:
                                 case API_GET_PROFILE_RESPONSE:
                                 case API_CREATE_SHORTCUT_RESPONSE:
                                 case API_GET_EMAIL_RESPONSE:
                                 case API_GET_PHONE_NUMBER_RESPONSE:
-                                case API_GET_CLUB_RESPONSE:
-                                case API_MAKE_PAYMENT_RESPONSE:
-                                case API_BROADCAST_RESPONSE:
-                                case API_OPEN_CHAT_RESPONSE:
-                                case API_GET_INSTALLED_APPS_RESPONSE:
-                                case API_OPEN_APP_RESPONSE:
-                                case API_OPEN_APP_PROFILE_RESPONSE:
                                 case API_SHOW_TOAST_RESPONSE:
-                                case API_OPEN_LINK_RESPONSE:
-                                case API_CREATE_DEEP_LINK_RESPONSE:
-                                case API_NOTIFY_RESPONSE:
-                                case API_GET_DEVICE_INFO_RESPONSE:
+                                case API_HOOK_RESPONSE:
                                     if (self.listeners.get(requestable.id) !== undefined) {
                                         self.listeners.get(requestable.id).onComplete(requestable);
                                     }
@@ -464,22 +466,21 @@ class RequestHandler {
                     const requestable = JSON.parse(args);
                     if (requestable.id && requestable.api) {
                         switch (requestable.api) {
+                            case API_OPEN_APP_RESPONSE:
+                            case API_BROADCAST_RESPONSE:
+                            case API_OPEN_CHAT_RESPONSE:
+                            case API_GET_CLUB_RESPONSE:
+                            case API_GET_DEVICE_INFO_RESPONSE:
+                            case API_OPEN_LINK_RESPONSE:
+                            case API_CREATE_DEEP_LINK_RESPONSE:
+                            case API_NOTIFY_RESPONSE:
+                            case API_MAKE_PAYMENT_RESPONSE:
                             case API_GET_PROFILE_RESPONSE:
                             case API_CREATE_SHORTCUT_RESPONSE:
                             case API_GET_EMAIL_RESPONSE:
                             case API_GET_PHONE_NUMBER_RESPONSE:
-                            case API_GET_CLUB_RESPONSE:
-                            case API_MAKE_PAYMENT_RESPONSE:
-                            case API_BROADCAST_RESPONSE:
-                            case API_OPEN_CHAT_RESPONSE:
-                            case API_GET_INSTALLED_APPS_RESPONSE:
-                            case API_OPEN_APP_RESPONSE:
-                            case API_OPEN_APP_PROFILE_RESPONSE:
                             case API_SHOW_TOAST_RESPONSE:
-                            case API_INSERT_DATA_RESPONSE:
-                            case API_OPEN_LINK_RESPONSE:
-                            case API_CREATE_DEEP_LINK_RESPONSE:
-                            case API_NOTIFY_RESPONSE:
+                            case API_HOOK_RESPONSE:
                                 interceptable = true;
                                 if (self.listeners.get(requestable.id) !== undefined) {
                                     self.listeners.get(requestable.id).onComplete(requestable);

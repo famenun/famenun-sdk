@@ -1,3 +1,19 @@
+const temp = {
+    id: "feeds_id",
+    layout: "feeds|story|gems",
+    dp: "https://exmaple.com/dp.jpg",
+    username: "username of the person who ",
+    description: "this is a title",
+    data: [{
+        type: "image|video",
+        thumb: "https://example.com/thumbnail.jpg",
+        url: "https://example.com/resource.jpg.mp4"
+    }],
+    action: "./index.html?src=article_id",
+    reacts: true | false,
+    notes: true | false
+}
+
 (() => {
     setTimeout(() => {
         __famenun__.emit({

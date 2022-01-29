@@ -375,9 +375,9 @@
             setTimeout(async() => {
                 try {
                     await api.profileHandler.createShortcut({
-                        // image: files[0],
-                        image: "./icon.png",
-                        name: "Test",
+                        // icon: files[0],
+                        icon: "./icon.png",
+                        title: "Test",
                         info: "This is test info about the shortcut",
                         path: "./index.html?user={uid}"
                     });
