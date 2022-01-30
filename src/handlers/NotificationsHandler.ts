@@ -2,7 +2,7 @@ import { RequestHandler, Requestable, API_NOTIFY } from "./RequestHandler";
 
 export class Notifiable {
     title?: string;
-    body?: string;
+    description?: string;
     image?: string;
     path?: string;
 }

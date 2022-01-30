@@ -31,7 +31,7 @@
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <h6>AppGalaxyHandler.openApp</h6>
-                        <input type="text" class="form-control" id="appId" name="appId" placeholder="App ID" />
+                        <input type="text" class="form-control" id="appId" placeholder="App ID" />
                         <br>
                         <button type="button" class="btn btn-primary" onclick="openApp()">Open App</button>
                     </div>
@@ -49,7 +49,7 @@
                         <h6>BroadcastHandler.broadcast</h6>
                         <img id="image" style="max-width: 300px; max-height: 300px; object-fit: contain;" />
                         <br>
-                        <input type="file" id="file" name="file" accept="image/*">
+                        <input type="file" id="file" accept="image/*">
                         <br>
                         <button type="button" class="btn btn-primary" onclick="broadcast()">Broadcast</button>
                     </div>
@@ -65,7 +65,7 @@
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <h6>ChatroomsHandler.openChat</h6>
-                        <input type="text" class="form-control" id="people" name="people" placeholder="User IDs seperated by comma" />
+                        <input type="text" class="form-control" id="people" placeholder="User IDs seperated by comma" />
                         <br>
                         <button type="button" class="btn btn-primary" onclick="openChat()">Open Chat</button>
                     </div>
@@ -114,6 +114,12 @@
                         <br>
                         <br>
                         <h6>LinksHandler.createDeepLink</h6>
+                        <input type="text" class="form-control" id="linkTitle" placeholder="This is a test title" value="this is a test title" />
+                        <br>
+                        <input type="text" class="form-control" id="linkDescription" placeholder="This is a test descriprion" value="this is a test description" />
+                        <br>
+                        <input type="text" class="form-control" id="linkImage" placeholder="https://example.com/image.png" value="https://example.com/image.png" />
+                        <br>
                         <button type="button" class="btn btn-primary" onclick="createDeepLink()">Create Deep Link</button>
                     </div>
                 </div>
@@ -128,6 +134,12 @@
                 <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <h6>NotificationsHandler.notify</h6>
+                        <input type="text" class="form-control" id="notifTitle" placeholder="This is a test title" value="this is a test title" />
+                        <br>
+                        <input type="text" class="form-control" id="notifDescription" placeholder="This is a test descriprion" value="this is a test description" />
+                        <br>
+                        <input type="text" class="form-control" id="notifImage" placeholder="https://example.com/image.png" value="https://example.com/image.png" />
+                        <br>
                         <button type="button" class="btn btn-primary" onclick="notify()">Notify</button>
                     </div>
                 </div>
@@ -189,7 +201,7 @@
                 <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <h6>ToastHandler.showToast</h6>
-                        <input type="text" class="form-control" id="message" name="message" placeholder="Message" />
+                        <input type="text" class="form-control" id="message" placeholder="Message" />
                         <br>
                         <button type="button" class="btn btn-primary" onclick="showToast()">Show Toast</button>
                     </div>
@@ -276,7 +288,7 @@
 
         function openChat() {
             const people = document.getElementById("people").value;
-            const users = people.replace(/[^0-9A-Za-z,]/gi, '').split(",").map(e => e.trim());
+            const users = people.replace(/[^0-9A-Za-z,]/gi, '').split(",").map(e => e.trim()).filter(e => e.length > 0);
             setTimeout(async() => {
                 try {
                     await api.chatroomsHandler.openChat(users);
@@ -321,9 +333,15 @@
         }
 
         function createDeepLink() {
+            const linkTitle = document.getElementById("linkTitle").value;
+            const linkDescription = document.getElementById("linkDescription").value;
+            const linkImage = document.getElementById("linkImage").value;
             setTimeout(async() => {
                 try {
                     const link = await api.linksHandler.createDeepLink({
+                        title: linkTitle,
+                        description: linkDescription,
+                        image: linkImage,
                         path: "./index.html?user=user_uid"
                     });
                     console.log("link : " + link);
@@ -334,11 +352,16 @@
         }
 
         function notify() {
+            const notifTitle = document.getElementById("notifTitle").value;
+            const notifDescription = document.getElementById("notifDescription").value;
+            const notifImage = document.getElementById("notifImage").value;
             setTimeout(async() => {
                 try {
                     await api.notificationsHandler.notify({
-                        title: "this is notification title",
-                        image: "https://thumbor.forbes.com/thumbor/fit-in/416x416/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F5c76b7d331358e35dd2773a9%2F0x0.jpg%3Fbackground%3D000000%26cropX1%3D0%26cropX2%3D4401%26cropY1%3D0%26cropY2%3D4401"
+                        title: notifTitle,
+                        description: notifDescription,
+                        image: notifImage,
+                        path: "./index.html?user=user_uid"
                     });
                     console.log("notified");
                 } catch (error) {
