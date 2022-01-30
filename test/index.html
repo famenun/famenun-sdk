@@ -31,6 +31,8 @@
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <h6>AppGalaxyHandler.openApp</h6>
+                        <input type="text" class="form-control" id="appId" name="appId" placeholder="App ID" />
+                        <br>
                         <button type="button" class="btn btn-primary" onclick="openApp()">Open App</button>
                     </div>
                 </div>
@@ -63,6 +65,8 @@
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <h6>ChatroomsHandler.openChat</h6>
+                        <input type="text" class="form-control" id="people" name="people" placeholder="User IDs seperated by comma" />
+                        <br>
                         <button type="button" class="btn btn-primary" onclick="openChat()">Open Chat</button>
                     </div>
                 </div>
@@ -244,10 +248,11 @@
         } catch (err) {}
 
         function openApp() {
+            const appId = document.getElementById("appId").value;
             setTimeout(async() => {
                 try {
                     await api.appGalaxyHandler.openApp({
-                        appId: "test_app"
+                        appId: appId
                     });
                     console.log("app opened");
                 } catch (error) {
@@ -270,9 +275,11 @@
         }
 
         function openChat() {
+            const people = document.getElementById("people").value;
+            const users = people.replace(/[^0-9A-Za-z,]/gi, '').split(",").map(e => e.trim());
             setTimeout(async() => {
                 try {
-                    await api.chatroomsHandler.openChat(uid, uid);
+                    await api.chatroomsHandler.openChat(users);
                     console.log(`chat opened :>`);
                 } catch (error) {
                     console.log(error);

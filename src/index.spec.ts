@@ -69,7 +69,7 @@ describe("SDK", () => {
         }
 
         try {
-            await api.chatroomsHandler?.openChat("Aditya", "Amit");
+            await api.chatroomsHandler?.openChat(["Aditya", "Amit"]);
             console.log("chat opened");
         } catch (error) {
             console.log(error);

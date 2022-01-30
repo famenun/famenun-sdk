@@ -10,7 +10,7 @@ export class ChatroomsHandler {
     * @param users - The people with whom you want to open chat
     *
     */
-    openChat(...users: Array<string>): Promise<void> {
+    openChat(users: string[]): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){
