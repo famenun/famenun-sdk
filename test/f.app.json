@@ -5,14 +5,18 @@
     "id": "test-app",
     /*name of the app*/
     "name": "Test App",
+    /*info about the app*/
+    "info": "this app is just to explore Famenun vOS APIs",
     /*path of the app*/
     "icon": "./icon.png",
     /*path of the entry file*/
     "entry": "./index.html",
     /*theme color of the app shold have all the six color digits*/
     "color": "#ff659a",
-    /*for hooking data in the famenun system like data in the feeds*/
+    /*for hooking data in the Famenun system like data in the feeds*/
     "hooks": {
         "feeds": "./hooks/feeds.js"
-    }
+    },
+    /*search tags for the app*/
+    "tags": ["fameun-sdk", "test-app"]
 }

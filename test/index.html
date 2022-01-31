@@ -51,6 +51,9 @@
                         <br>
                         <input type="file" id="file" accept="image/*">
                         <br>
+                        <br>
+                        <input type="text" class="form-control" id="broadcastText" placeholder="Broadcast text description" />
+                        <br>
                         <button type="button" class="btn btn-primary" onclick="broadcast()">Broadcast</button>
                     </div>
                 </div>
@@ -154,6 +157,16 @@
                 <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <h6>PaymentsHandler.makePayment</h6>
+                        <input type="text" class="form-control" id="refId" placeholder="Developer Reference ID" value="txn123" />
+                        <br>
+                        <input type="text" class="form-control" id="currency" placeholder="Amount to be paid in" value="INR" />
+                        <br>
+                        <input type="text" class="form-control" id="amount" placeholder="Amount to be paid" value="101" />
+                        <br>
+                        <input type="text" class="form-control" id="to" placeholder="User ID" />
+                        <br>
+                        <input type="text" class="form-control" id="note" placeholder="About transaction" value="Test transaction" />
+                        <br>
                         <button type="button" class="btn btn-primary" onclick="makePayment()">Make Payment</button>
                     </div>
                 </div>
@@ -177,6 +190,14 @@
                         <br>
                         <br>
                         <h6>ProfileHandler.createShortcut</h6>
+                        <input type="text" class="form-control" id="shortcutIcon" placeholder="./icon.png || https://..." value="./icon.png" />
+                        <br>
+                        <input type="text" class="form-control" id="shortcutTitle" placeholder="Shortcut Title" value="Test Shortcut" />
+                        <br>
+                        <input type="text" class="form-control" id="shortcutInfo" placeholder="Shortcut Info" value="This is a test shortcut" />
+                        <br>
+                        <input type="text" class="form-control" id="shortcutPath" placeholder="./index.html?user={uid}" value="./index.html?user={uid}" />
+                        <br>
                         <button type="button" class="btn btn-primary" onclick="createProfileShortcut()">Create Profile Shortcut</button>
                         <br>
                         <br>
@@ -274,9 +295,11 @@
         }
 
         function broadcast() {
+            const broadcastText = document.getElementById("broadcastText").value;
             setTimeout(async() => {
                 try {
                     await api.broadcastHandler.broadcast({
+                        text: broadcastText,
                         files: files
                     });
                     console.log(`broadcast done :>`);
@@ -371,14 +394,19 @@
         }
 
         function makePayment() {
+            const refId = document.getElementById("refId").value;
+            const currency = document.getElementById("currency").value;
+            const amount = document.getElementById("amount").value;
+            const to = document.getElementById("to").value;
+            const note = document.getElementById("note").value;
             setTimeout(async() => {
                 try {
                     await api.paymentsHandler.makePayment({
-                        referenceId: "txn_id",
-                        currency: "INR",
-                        amount: 21,
-                        to: "fPtJJsw2TDFlwfPVpB3g",
-                        note: "buy shots premium"
+                        referenceId: refId,
+                        currency: currency,
+                        amount: amount,
+                        to: to,
+                        note: note
                     });
                     console.log(`payment done :>`);
                 } catch (error) {
@@ -402,14 +430,17 @@
         }
 
         function createProfileShortcut() {
+            const shortcutIcon = document.getElementById("shortcutIcon").value;
+            const shortcutTitle = document.getElementById("shortcutTitle").value;
+            const shortcutInfo = document.getElementById("shortcutInfo").value;
+            const shortcutPath = document.getElementById("shortcutPath").value;
             setTimeout(async() => {
                 try {
                     await api.profileHandler.createShortcut({
-                        // icon: files[0],
-                        icon: "./icon.png",
-                        title: "Test",
-                        info: "This is test info about the shortcut",
-                        path: "./index.html?user={uid}"
+                        icon: shortcutIcon,
+                        title: shortcutTitle,
+                        info: shortcutInfo,
+                        path: shortcutPath
                     });
                     console.log("profile shortcut created")
                 } catch (error) {

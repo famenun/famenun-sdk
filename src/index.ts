@@ -9,6 +9,7 @@ import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
 import { NotificationsHandler } from "./handlers/NotificationsHandler";
 import { RequestHandler, API_HOOK } from "./handlers/RequestHandler";
 import { DeviceHandler } from "./handlers/DeviceHandler";
+import { LocationHandler } from "./handlers/LocationHandler";
 
 export class Hookable {
     id!: string;
@@ -61,6 +62,7 @@ export const init = (debug?: boolean): FamenunApi => {
     
             toastHandler: new ToastHandler(requestHandler),
             linksHandler: new LinksHandler(requestHandler),
+            locationHandler: new LocationHandler(requestHandler),
             notificationsHandler: new NotificationsHandler(requestHandler),
             deviceHandler: new DeviceHandler(requestHandler)
 

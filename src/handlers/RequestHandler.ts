@@ -7,6 +7,7 @@ export const API_GET_CLUB = "API_GET_CLUB";
 export const API_GET_DEVICE_INFO = "API_GET_DEVICE_INFO";
 export const API_OPEN_LINK = "API_OPEN_LINK";
 export const API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
+export const API_GET_LOCATION = "API_GET_LOCATION";
 export const API_NOTIFY = "API_NOTIFY";
 export const API_MAKE_PAYMENT = "API_MAKE_PAYMENT";
 export const API_GET_PROFILE = "API_GET_PROFILE";
@@ -23,6 +24,7 @@ const API_GET_CLUB_RESPONSE = "API_GET_CLUB_RESPONSE";
 const API_GET_DEVICE_INFO_RESPONSE = "API_GET_DEVICE_INFO_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
 const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
+const API_GET_LOCATION_RESPONSE = "API_GET_LOCATION_RESPONSE";
 const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
 const API_MAKE_PAYMENT_RESPONSE = "API_MAKE_PAYMENT_RESPONSE";
 const API_GET_PROFILE_RESPONSE = "API_GET_PROFILE_RESPONSE";
@@ -70,6 +72,7 @@ export class RequestHandler {
                                 case API_GET_DEVICE_INFO_RESPONSE:
                                 case API_OPEN_LINK_RESPONSE:
                                 case API_CREATE_DEEP_LINK_RESPONSE:
+                                case API_GET_LOCATION:
                                 case API_NOTIFY_RESPONSE:
                                 case API_MAKE_PAYMENT_RESPONSE:
                                 case API_GET_PROFILE_RESPONSE:
@@ -107,6 +110,7 @@ export class RequestHandler {
                             case API_GET_DEVICE_INFO_RESPONSE:
                             case API_OPEN_LINK_RESPONSE:
                             case API_CREATE_DEEP_LINK_RESPONSE:
+                            case API_GET_LOCATION_RESPONSE:
                             case API_NOTIFY_RESPONSE:
                             case API_MAKE_PAYMENT_RESPONSE:
                             case API_GET_PROFILE_RESPONSE:
