@@ -1124,10 +1124,6 @@ class DeviceHandler {
             try {
                 if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
                     resolve({
-                        id: "test_device_id",
-                        ip: "1.2.3.4",
-                        app: "Famenun Web",
-                        os: "Famenun Web OS",
                         theme: "system",
                         notificationAccessToken: "test_notification_access_token"
                     });

@@ -15,6 +15,7 @@ describe("SDK", () => {
 
         try {
             await api.profileHandler?.createShortcut({
+                id: "shortcut_id",
                 icon: "https://famenun.com/dp.png",
                 title: "About me",
                 info: "Click to know more about me",

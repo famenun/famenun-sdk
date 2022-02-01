@@ -2,6 +2,7 @@ import { Requestable, RequestHandler, API_GET_PROFILE, API_CREATE_SHORTCUT, API_
 import { blobUrlToBase64, resolveImage } from "../utils/Utility";
 
 export class ProfileShortcut {
+    id!: string; // shortcut id
     icon!: string; // dp of the shortcut
     title!: string; // name of the shortcut
     info!: string; // short helpful description about the shortcut functionality | not more than 51 chars

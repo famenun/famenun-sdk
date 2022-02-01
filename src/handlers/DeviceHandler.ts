@@ -1,10 +1,6 @@
 import { API_GET_DEVICE_INFO, Requestable, RequestHandler } from "./RequestHandler";
 
 export class DeviceInfo {
-    id?: string; // unqiue identifier of the device
-    ip?: string; // network ip of the user
-    app?: string; // famenun android/ios else browser name
-    os?: string; // android ios ubuntu windows
     theme?: string; // dark / light / system
     notificationAccessToken?: string; // notification access token
 }
@@ -21,10 +17,6 @@ export class DeviceHandler {
             try {
                 if(this.requestHandler?.debug){
                     resolve({
-                        id: "test_device_id",
-                        ip: "1.2.3.4",
-                        app: "Famenun Web",
-                        os: "Famenun Web OS",
                         theme: "system",
                         notificationAccessToken: "test_notification_access_token"
                     });

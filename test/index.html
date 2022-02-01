@@ -129,6 +129,20 @@
             </div>
 
             <div class="accordion-item">
+                <h2 class="accordion-header" id="headingLocation">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLocation" aria-expanded="false" aria-controls="collapseLocation">
+                        LocationHandler
+                </button>
+                </h2>
+                <div id="collapseLocation" class="accordion-collapse collapse" aria-labelledby="headingLocation" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <h6>LocationHandler.getLocation</h6>
+                        <button type="button" class="btn btn-primary" onclick="getLocation()">Get Location</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
                 <h2 class="accordion-header" id="headingSeven">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
                         NotificationsHandler
@@ -368,6 +382,17 @@
                         path: "./index.html?user=user_uid"
                     });
                     console.log("link : " + link);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 0);
+        }
+
+        function getLocation() {
+            setTimeout(async() => {
+                try {
+                    const location = await api.locationHandler.getLocation();
+                    console.log(location);
                 } catch (error) {
                     console.log(error);
                 }
