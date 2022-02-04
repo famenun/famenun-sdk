@@ -99,6 +99,22 @@
                     <div class="accordion-body">
                         <h6>DeviceHandler.getDeviceInfo</h6>
                         <button type="button" class="btn btn-primary" onclick="getDeviceInfo()">Get Device Info</button>
+                        <br>
+                        <h6>DeviceHandler.toggleFullscreen</h6>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="fullscreen" id="fullscreenTrue" checked>
+                            <label class="form-check-label" for="fullscreenTrue">
+                              Go full screen
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="fullscreen" id="fullscreenFalse">
+                            <label class="form-check-label" for="fullscreenFalse">
+                              Exit full screen
+                            </label>
+                        </div>
+                        <br>
+                        <button type="button" class="btn btn-primary" onclick="toggleFullscreen(document.getElementById('fullscreenTrue').checked)">Toogle Full Screen</button>
                     </div>
                 </div>
             </div>
@@ -352,6 +368,16 @@
                 try {
                     const device = await api.deviceHandler.getDeviceInfo();
                     console.log(device);
+                } catch (error) {
+                    console.log(error);
+                }
+            })();
+        }
+
+        function toggleFullscreen(fullscreen) {
+            (async() => {
+                try {
+                    await api.deviceHandler.toggleFullscreen(fullscreen);
                 } catch (error) {
                     console.log(error);
                 }

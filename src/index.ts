@@ -10,6 +10,7 @@ import { NotificationsHandler } from "./handlers/NotificationsHandler";
 import { RequestHandler, API_HOOK } from "./handlers/RequestHandler";
 import { DeviceHandler } from "./handlers/DeviceHandler";
 import { LocationHandler } from "./handlers/LocationHandler";
+import { ShareHandler } from "./handlers/ShareHandler";
 
 export class Hookable {
     id!: string;
@@ -51,21 +52,18 @@ export const init = (debug?: boolean): FamenunApi => {
         // @ts-ignore
         window.__famenun_api__ = {
             debug: debug,
-    
-            profileHandler: new ProfileHandler(requestHandler),
-            clubsHandler: new ClubsHandler(requestHandler),
-    
-            paymentsHandler: new PaymentsHandler(requestHandler),
+            appGalaxyHandler: new AppGalaxyHandler(requestHandler),
             broadcastHandler: new BroadcastHandler(requestHandler),
             chatroomsHandler: new ChatroomsHandler(requestHandler),
-            appGalaxyHandler: new AppGalaxyHandler(requestHandler),
-    
-            toastHandler: new ToastHandler(requestHandler),
+            clubsHandler: new ClubsHandler(requestHandler),
+            deviceHandler: new DeviceHandler(requestHandler),
             linksHandler: new LinksHandler(requestHandler),
             locationHandler: new LocationHandler(requestHandler),
             notificationsHandler: new NotificationsHandler(requestHandler),
-            deviceHandler: new DeviceHandler(requestHandler)
-
+            paymentsHandler: new PaymentsHandler(requestHandler),
+            profileHandler: new ProfileHandler(requestHandler),
+            shareHandler: new ShareHandler(requestHandler),
+            toastHandler: new ToastHandler(requestHandler)
         }
     }
     // @ts-ignore
@@ -119,7 +117,7 @@ export const runWebsite = (website: string) => {
                 .then(res => res.text())
                 .then(code => {
                     var script = document.createElement("script");
-                    script.innerHTML = decodeURIComponent(code);
+                    script.innerHTML = code;
                     document.body.append(script);
                 })
                 .catch(console.error);

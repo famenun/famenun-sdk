@@ -179,7 +179,7 @@ exports.runWebsite = runWebsite;
                     .then(res => res.text())
                     .then(code => {
                     var script = document.createElement("script");
-                    script.innerHTML = decodeURIComponent(code);
+                    script.innerHTML = code;
                     document.body.append(script);
                 })
                     .catch(console.error);
@@ -376,13 +376,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestHandler = exports.Requestable = exports.API_HOOK = exports.API_SHOW_TOAST = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = exports.API_MAKE_PAYMENT = exports.API_NOTIFY = exports.API_GET_LOCATION = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_GET_DEVICE_INFO = exports.API_GET_CLUB = exports.API_OPEN_CHAT = exports.API_BROADCAST = exports.API_OPEN_APP = void 0;
+exports.RequestHandler = exports.Requestable = exports.API_HOOK = exports.API_SHOW_TOAST = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = exports.API_MAKE_PAYMENT = exports.API_NOTIFY = exports.API_GET_LOCATION = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_TOGGLE_FULLSCREEN = exports.API_GET_DEVICE_INFO = exports.API_GET_CLUB = exports.API_OPEN_CHAT = exports.API_BROADCAST = exports.API_OPEN_APP = void 0;
 const Utility_1 = __webpack_require__(3);
 exports.API_OPEN_APP = "API_OPEN_APP";
 exports.API_BROADCAST = "API_BROADCAST";
 exports.API_OPEN_CHAT = "API_OPEN_CHAT";
 exports.API_GET_CLUB = "API_GET_CLUB";
 exports.API_GET_DEVICE_INFO = "API_GET_DEVICE_INFO";
+exports.API_TOGGLE_FULLSCREEN = "API_TOGGLE_FULLSCREEN";
 exports.API_OPEN_LINK = "API_OPEN_LINK";
 exports.API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
 exports.API_GET_LOCATION = "API_GET_LOCATION";
@@ -399,6 +400,7 @@ const API_BROADCAST_RESPONSE = "API_BROADCAST_RESPONSE";
 const API_OPEN_CHAT_RESPONSE = "API_OPEN_CHAT_RESPONSE";
 const API_GET_CLUB_RESPONSE = "API_GET_CLUB_RESPONSE";
 const API_GET_DEVICE_INFO_RESPONSE = "API_GET_DEVICE_INFO_RESPONSE";
+const API_TOGGLE_FULLSCREEN_RESPONSE = "API_TOGGLE_FULLSCREEN_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
 const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
 const API_GET_LOCATION_RESPONSE = "API_GET_LOCATION_RESPONSE";
@@ -436,6 +438,7 @@ class RequestHandler {
                                 case API_OPEN_CHAT_RESPONSE:
                                 case API_GET_CLUB_RESPONSE:
                                 case API_GET_DEVICE_INFO_RESPONSE:
+                                case exports.API_TOGGLE_FULLSCREEN:
                                 case API_OPEN_LINK_RESPONSE:
                                 case API_CREATE_DEEP_LINK_RESPONSE:
                                 case exports.API_GET_LOCATION:
@@ -476,6 +479,7 @@ class RequestHandler {
                             case API_OPEN_CHAT_RESPONSE:
                             case API_GET_CLUB_RESPONSE:
                             case API_GET_DEVICE_INFO_RESPONSE:
+                            case API_TOGGLE_FULLSCREEN_RESPONSE:
                             case API_OPEN_LINK_RESPONSE:
                             case API_CREATE_DEEP_LINK_RESPONSE:
                             case API_GET_LOCATION_RESPONSE:
@@ -1136,6 +1140,40 @@ class DeviceHandler {
                         onComplete(requestable) {
                             if (!requestable.error) {
                                 resolve(requestable.data);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+    /**
+    * Toogle device fullscreen mode
+    */
+    toggleFullscreen(fullscreen) {
+        return new Promise((resolve, reject) => {
+            var _a, _b;
+            try {
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_TOGGLE_FULLSCREEN,
+                        data: {
+                            fullscreen: fullscreen
+                        }
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
                             }
                             else {
                                 reject(requestable.message);
