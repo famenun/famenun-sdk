@@ -2,7 +2,7 @@ import { API_GET_DEVICE_INFO, API_TOGGLE_FULLSCREEN, Requestable, RequestHandler
 
 export class DeviceInfo {
     theme?: string; // dark / light / system
-    notificationAccessToken?: string; // notification access token
+    notifyAccessToken?: string; // can be used to send notification through server
 }
 
 export class DeviceHandler {
@@ -18,7 +18,7 @@ export class DeviceHandler {
                 if(this.requestHandler?.debug){
                     resolve({
                         theme: "system",
-                        notificationAccessToken: "test_notification_access_token"
+                        notifyAccessToken: "test_notification_access_token"
                     });
                 }else{
                     this.requestHandler?.request({
