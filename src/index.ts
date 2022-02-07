@@ -28,20 +28,18 @@ export class Hookable {
 export class FamenunApi {
     appId?: string;
     debug?: boolean;
-
-    profileHandler?: ProfileHandler;
-    clubsHandler?: ClubsHandler;
-
-    paymentsHandler?: PaymentsHandler;
+    appGalaxyHandler?: AppGalaxyHandler;
     broadcastHandler?: BroadcastHandler;
     chatroomsHandler?: ChatroomsHandler;
-    appGalaxyHandler?: AppGalaxyHandler;
-
-    toastHandler?: ToastHandler;
-    linksHandler?: LinksHandler;
-    notificationsHandler?: NotificationsHandler;
+    clubsHandler?: ClubsHandler;
     deviceHandler?: DeviceHandler;
-
+    linksHandler?: LinksHandler;
+    locationHandler?: LocationHandler;
+    notificationsHandler?: NotificationsHandler;
+    paymentsHandler?: PaymentsHandler;
+    profileHandler?: ProfileHandler;
+    shareHandler?: ShareHandler;
+    toastHandler?: ToastHandler;
 }
 
 export const init = (debug?: boolean): FamenunApi => {

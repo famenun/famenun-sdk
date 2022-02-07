@@ -1,6 +1,6 @@
 {
     "name": "@famenun/sdk",
-    "version": "1.6.0",
+    "version": "1.6.2",
     "description": "SDK for creating Famenun native apps",
     "main": "lib/index.js",
     "scripts": {
@@ -23,7 +23,7 @@
         "lib"
     ],
     "dependencies": {
-        "@famenun/sdk": "^1.5.8"
+        "@famenun/sdk": "^1.6.1"
     },
     "devDependencies": {
         "@types/mocha": "^7.0.2",

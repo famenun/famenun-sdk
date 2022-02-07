@@ -104,6 +104,7 @@ const NotificationsHandler_1 = __webpack_require__(11);
 const RequestHandler_1 = __webpack_require__(2);
 const DeviceHandler_1 = __webpack_require__(12);
 const LocationHandler_1 = __webpack_require__(13);
+const ShareHandler_1 = __webpack_require__(14);
 class Hookable {
 }
 exports.Hookable = Hookable;
@@ -117,17 +118,18 @@ const init = (debug) => {
         // @ts-ignore
         window.__famenun_api__ = {
             debug: debug,
-            profileHandler: new ProfileHandler_1.ProfileHandler(requestHandler),
-            clubsHandler: new ClubsHandler_1.ClubsHandler(requestHandler),
-            paymentsHandler: new PaymentsHandler_1.PaymentsHandler(requestHandler),
+            appGalaxyHandler: new AppGalaxyHandler_1.AppGalaxyHandler(requestHandler),
             broadcastHandler: new BroadcastHandler_1.BroadcastHandler(requestHandler),
             chatroomsHandler: new ChatroomsHandler_1.ChatroomsHandler(requestHandler),
-            appGalaxyHandler: new AppGalaxyHandler_1.AppGalaxyHandler(requestHandler),
-            toastHandler: new ToastHandler_1.ToastHandler(requestHandler),
+            clubsHandler: new ClubsHandler_1.ClubsHandler(requestHandler),
+            deviceHandler: new DeviceHandler_1.DeviceHandler(requestHandler),
             linksHandler: new LinksHandler_1.LinksHandler(requestHandler),
             locationHandler: new LocationHandler_1.LocationHandler(requestHandler),
             notificationsHandler: new NotificationsHandler_1.NotificationsHandler(requestHandler),
-            deviceHandler: new DeviceHandler_1.DeviceHandler(requestHandler)
+            paymentsHandler: new PaymentsHandler_1.PaymentsHandler(requestHandler),
+            profileHandler: new ProfileHandler_1.ProfileHandler(requestHandler),
+            shareHandler: new ShareHandler_1.ShareHandler(requestHandler),
+            toastHandler: new ToastHandler_1.ToastHandler(requestHandler)
         };
     }
     // @ts-ignore
@@ -376,7 +378,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestHandler = exports.Requestable = exports.API_HOOK = exports.API_SHOW_TOAST = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = exports.API_MAKE_PAYMENT = exports.API_NOTIFY = exports.API_GET_LOCATION = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_TOGGLE_FULLSCREEN = exports.API_GET_DEVICE_INFO = exports.API_GET_CLUB = exports.API_OPEN_CHAT = exports.API_BROADCAST = exports.API_OPEN_APP = void 0;
+exports.RequestHandler = exports.Requestable = exports.API_HOOK = exports.API_SHARE = exports.API_SHOW_TOAST = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = exports.API_MAKE_PAYMENT = exports.API_NOTIFY = exports.API_GET_LOCATION = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_TOGGLE_FULLSCREEN = exports.API_GET_DEVICE_INFO = exports.API_GET_CLUB = exports.API_OPEN_CHAT = exports.API_BROADCAST = exports.API_OPEN_APP = void 0;
 const Utility_1 = __webpack_require__(3);
 exports.API_OPEN_APP = "API_OPEN_APP";
 exports.API_BROADCAST = "API_BROADCAST";
@@ -394,6 +396,7 @@ exports.API_CREATE_SHORTCUT = "API_CREATE_SHORTCUT";
 exports.API_GET_EMAIL = "API_GET_EMAIL";
 exports.API_GET_PHONE_NUMBER = "API_GET_PHONE_NUMBER";
 exports.API_SHOW_TOAST = "API_SHOW_TOAST";
+exports.API_SHARE = "API_SHARE";
 exports.API_HOOK = "API_HOOK";
 const API_OPEN_APP_RESPONSE = "API_OPEN_APP_RESPONSE";
 const API_BROADCAST_RESPONSE = "API_BROADCAST_RESPONSE";
@@ -411,6 +414,7 @@ const API_CREATE_SHORTCUT_RESPONSE = "API_CREATE_SHORTCUT_RESPONSE";
 const API_GET_EMAIL_RESPONSE = "API_GET_EMAIL_RESPONSE";
 const API_GET_PHONE_NUMBER_RESPONSE = "API_GET_PHONE_NUMBER_RESPONSE";
 const API_SHOW_TOAST_RESPONSE = "API_SHOW_TOAST_RESPONSE";
+const API_SHARE_RESPONSE = "API_SHARE_RESPONSE";
 const API_HOOK_RESPONSE = "API_HOOK_RESPONSE";
 class Requestable {
 }
@@ -438,10 +442,10 @@ class RequestHandler {
                                 case API_OPEN_CHAT_RESPONSE:
                                 case API_GET_CLUB_RESPONSE:
                                 case API_GET_DEVICE_INFO_RESPONSE:
-                                case exports.API_TOGGLE_FULLSCREEN:
+                                case API_TOGGLE_FULLSCREEN_RESPONSE:
                                 case API_OPEN_LINK_RESPONSE:
                                 case API_CREATE_DEEP_LINK_RESPONSE:
-                                case exports.API_GET_LOCATION:
+                                case API_GET_LOCATION_RESPONSE:
                                 case API_NOTIFY_RESPONSE:
                                 case API_MAKE_PAYMENT_RESPONSE:
                                 case API_GET_PROFILE_RESPONSE:
@@ -449,6 +453,7 @@ class RequestHandler {
                                 case API_GET_EMAIL_RESPONSE:
                                 case API_GET_PHONE_NUMBER_RESPONSE:
                                 case API_SHOW_TOAST_RESPONSE:
+                                case API_SHARE_RESPONSE:
                                 case API_HOOK_RESPONSE:
                                     if (self.listeners.get(requestable.id) !== undefined) {
                                         self.listeners.get(requestable.id).onComplete(requestable);
@@ -490,6 +495,7 @@ class RequestHandler {
                             case API_GET_EMAIL_RESPONSE:
                             case API_GET_PHONE_NUMBER_RESPONSE:
                             case API_SHOW_TOAST_RESPONSE:
+                            case API_SHARE_RESPONSE:
                             case API_HOOK_RESPONSE:
                                 interceptable = true;
                                 if (self.listeners.get(requestable.id) !== undefined) {
@@ -1247,6 +1253,58 @@ class LocationHandler {
     }
 }
 exports.LocationHandler = LocationHandler;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ShareHandler = exports.Shareable = void 0;
+const RequestHandler_1 = __webpack_require__(2);
+class Shareable {
+}
+exports.Shareable = Shareable;
+class ShareHandler {
+    constructor(requestHandler) {
+        this.requestHandler = requestHandler;
+    }
+    /**
+    * Share text to OS native apps
+    */
+    share(shareable) {
+        return new Promise((resolve, reject) => {
+            var _a, _b;
+            try {
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve();
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_SHARE,
+                        data: shareable
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve();
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+}
+exports.ShareHandler = ShareHandler;
 
 
 /***/ })

@@ -51,7 +51,7 @@ export class LinksHandler {
     * @param path - the path of your app that ll be opened on click
     *
     */
-    createDeepLink(linkable: Linkable): Promise<string> {
+    createDeepLink(linkable: Linkable): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){

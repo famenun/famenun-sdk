@@ -1,7 +1,7 @@
 import { Requestable, RequestHandler, API_GET_PROFILE, API_CREATE_SHORTCUT, API_GET_EMAIL, API_GET_PHONE_NUMBER } from "./RequestHandler";
-import { blobUrlToBase64, resolveImage } from "../utils/Utility";
+import { resolveImage } from "../utils/Utility";
 
-export class ProfileShortcut {
+export class Shortcutable {
     id!: string; // shortcut id
     icon!: string; // dp of the shortcut
     title!: string; // name of the shortcut
@@ -49,17 +49,17 @@ export class ProfileHandler {
     /**
     * Create shortcut in profile
     */
-    createShortcut(profileShortcut: ProfileShortcut): Promise<void> {
+    createShortcut(shortcutable: Shortcutable): Promise<void> {
         return new Promise(async (resolve, reject) => {
             try {
                 if(this.requestHandler?.debug){
                     resolve();
                 }else{
-                    profileShortcut.icon = await resolveImage(profileShortcut.icon);
+                    shortcutable.icon = await resolveImage(shortcutable.icon);
                     this.requestHandler?.request({
                         id: "request_id",
                         api: API_CREATE_SHORTCUT,
-                        data: profileShortcut
+                        data: shortcutable
                     }, {
                         onComplete(requestable: Requestable): void {
                             if(!requestable.error){

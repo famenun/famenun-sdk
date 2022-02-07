@@ -8,6 +8,8 @@ import { LinksHandler } from "./handlers/LinksHandler";
 import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
 import { NotificationsHandler } from "./handlers/NotificationsHandler";
 import { DeviceHandler } from "./handlers/DeviceHandler";
+import { LocationHandler } from "./handlers/LocationHandler";
+import { ShareHandler } from "./handlers/ShareHandler";
 export declare class Hookable {
     id: string;
     layout?: string;
@@ -22,16 +24,18 @@ export declare class Hookable {
 export declare class FamenunApi {
     appId?: string;
     debug?: boolean;
-    profileHandler?: ProfileHandler;
-    clubsHandler?: ClubsHandler;
-    paymentsHandler?: PaymentsHandler;
+    appGalaxyHandler?: AppGalaxyHandler;
     broadcastHandler?: BroadcastHandler;
     chatroomsHandler?: ChatroomsHandler;
-    appGalaxyHandler?: AppGalaxyHandler;
-    toastHandler?: ToastHandler;
-    linksHandler?: LinksHandler;
-    notificationsHandler?: NotificationsHandler;
+    clubsHandler?: ClubsHandler;
     deviceHandler?: DeviceHandler;
+    linksHandler?: LinksHandler;
+    locationHandler?: LocationHandler;
+    notificationsHandler?: NotificationsHandler;
+    paymentsHandler?: PaymentsHandler;
+    profileHandler?: ProfileHandler;
+    shareHandler?: ShareHandler;
+    toastHandler?: ToastHandler;
 }
 export declare const init: (debug?: boolean | undefined) => FamenunApi;
 export declare const runWebsite: (website: string) => void;
