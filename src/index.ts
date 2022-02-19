@@ -6,8 +6,7 @@ import { BroadcastHandler } from "./handlers/BroadcastHandler";
 import { ChatroomsHandler } from "./handlers/ChatroomsHandler";
 import { LinksHandler } from "./handlers/LinksHandler";
 import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
-import { NotificationsHandler } from "./handlers/NotificationsHandler";
-import { RequestHandler, API_HOOK } from "./handlers/RequestHandler";
+import { RequestHandler, API_HOOKS } from "./handlers/RequestHandler";
 import { DeviceHandler } from "./handlers/DeviceHandler";
 import { LocationHandler } from "./handlers/LocationHandler";
 import { ShareHandler } from "./handlers/ShareHandler";
@@ -35,7 +34,6 @@ export class FamenunApi {
     deviceHandler?: DeviceHandler;
     linksHandler?: LinksHandler;
     locationHandler?: LocationHandler;
-    notificationsHandler?: NotificationsHandler;
     paymentsHandler?: PaymentsHandler;
     profileHandler?: ProfileHandler;
     shareHandler?: ShareHandler;
@@ -57,7 +55,6 @@ export const init = (debug?: boolean): FamenunApi => {
             deviceHandler: new DeviceHandler(requestHandler),
             linksHandler: new LinksHandler(requestHandler),
             locationHandler: new LocationHandler(requestHandler),
-            notificationsHandler: new NotificationsHandler(requestHandler),
             paymentsHandler: new PaymentsHandler(requestHandler),
             profileHandler: new ProfileHandler(requestHandler),
             shareHandler: new ShareHandler(requestHandler),
@@ -106,7 +103,7 @@ export const runWebsite = (website: string) => {
             emit: (emitable: Hookable) => {
                 requestHandler.request({
                     id: emitable.id,
-                    api: API_HOOK,
+                    api: API_HOOKS,
                     data: emitable
                 });
             },

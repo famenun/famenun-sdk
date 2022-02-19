@@ -100,11 +100,10 @@ const BroadcastHandler_1 = __webpack_require__(7);
 const ChatroomsHandler_1 = __webpack_require__(8);
 const LinksHandler_1 = __webpack_require__(9);
 const AppGalaxyHandler_1 = __webpack_require__(10);
-const NotificationsHandler_1 = __webpack_require__(11);
 const RequestHandler_1 = __webpack_require__(2);
-const DeviceHandler_1 = __webpack_require__(12);
-const LocationHandler_1 = __webpack_require__(13);
-const ShareHandler_1 = __webpack_require__(14);
+const DeviceHandler_1 = __webpack_require__(11);
+const LocationHandler_1 = __webpack_require__(12);
+const ShareHandler_1 = __webpack_require__(13);
 class Hookable {
 }
 exports.Hookable = Hookable;
@@ -125,7 +124,6 @@ const init = (debug) => {
             deviceHandler: new DeviceHandler_1.DeviceHandler(requestHandler),
             linksHandler: new LinksHandler_1.LinksHandler(requestHandler),
             locationHandler: new LocationHandler_1.LocationHandler(requestHandler),
-            notificationsHandler: new NotificationsHandler_1.NotificationsHandler(requestHandler),
             paymentsHandler: new PaymentsHandler_1.PaymentsHandler(requestHandler),
             profileHandler: new ProfileHandler_1.ProfileHandler(requestHandler),
             shareHandler: new ShareHandler_1.ShareHandler(requestHandler),
@@ -172,7 +170,7 @@ exports.runWebsite = runWebsite;
             emit: (emitable) => {
                 requestHandler.request({
                     id: emitable.id,
-                    api: RequestHandler_1.API_HOOK,
+                    api: RequestHandler_1.API_HOOKS,
                     data: emitable
                 });
             },
@@ -213,12 +211,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProfileHandler = exports.ProfileShortcut = void 0;
+exports.ProfileHandler = exports.Shortcutable = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 const Utility_1 = __webpack_require__(3);
-class ProfileShortcut {
+class Shortcutable {
 }
-exports.ProfileShortcut = ProfileShortcut;
+exports.Shortcutable = Shortcutable;
 class ProfileHandler {
     constructor(requestHandler) {
         this.requestHandler = requestHandler;
@@ -262,7 +260,7 @@ class ProfileHandler {
     /**
     * Create shortcut in profile
     */
-    createShortcut(profileShortcut) {
+    createShortcut(shortcutable) {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b;
             try {
@@ -270,11 +268,11 @@ class ProfileHandler {
                     resolve();
                 }
                 else {
-                    profileShortcut.icon = yield (0, Utility_1.resolveImage)(profileShortcut.icon);
+                    shortcutable.icon = yield (0, Utility_1.resolveImage)(shortcutable.icon);
                     (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
                         id: "request_id",
                         api: RequestHandler_1.API_CREATE_SHORTCUT,
-                        data: profileShortcut
+                        data: shortcutable
                     }, {
                         onComplete(requestable) {
                             if (!requestable.error) {
@@ -378,18 +376,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestHandler = exports.Requestable = exports.API_HOOK = exports.API_SHARE = exports.API_SHOW_TOAST = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = exports.API_MAKE_PAYMENT = exports.API_NOTIFY = exports.API_GET_LOCATION = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_TOGGLE_FULLSCREEN = exports.API_GET_DEVICE_INFO = exports.API_GET_CLUB = exports.API_OPEN_CHAT = exports.API_BROADCAST = exports.API_OPEN_APP = void 0;
+exports.RequestHandler = exports.Requestable = exports.API_HOOKS = exports.API_SHARE = exports.API_SHOW_TOAST = exports.API_GET_PHONE_NUMBER = exports.API_GET_EMAIL = exports.API_CREATE_SHORTCUT = exports.API_GET_PROFILE = exports.API_MAKE_PAYMENT = exports.API_GET_LOCATION = exports.API_CREATE_DEEP_LINK = exports.API_OPEN_LINK = exports.API_TOGGLE_FULLSCREEN = exports.API_GET_DEVICE_INFO = exports.API_GET_CLUB = exports.API_SEND_MESSAGE = exports.API_OPEN_CHAT = exports.API_BROADCAST = exports.API_OPEN_APP = void 0;
 const Utility_1 = __webpack_require__(3);
 exports.API_OPEN_APP = "API_OPEN_APP";
 exports.API_BROADCAST = "API_BROADCAST";
 exports.API_OPEN_CHAT = "API_OPEN_CHAT";
+exports.API_SEND_MESSAGE = "API_SEND_MESSAGE";
 exports.API_GET_CLUB = "API_GET_CLUB";
 exports.API_GET_DEVICE_INFO = "API_GET_DEVICE_INFO";
 exports.API_TOGGLE_FULLSCREEN = "API_TOGGLE_FULLSCREEN";
 exports.API_OPEN_LINK = "API_OPEN_LINK";
 exports.API_CREATE_DEEP_LINK = "API_CREATE_DEEP_LINK";
 exports.API_GET_LOCATION = "API_GET_LOCATION";
-exports.API_NOTIFY = "API_NOTIFY";
 exports.API_MAKE_PAYMENT = "API_MAKE_PAYMENT";
 exports.API_GET_PROFILE = "API_GET_PROFILE";
 exports.API_CREATE_SHORTCUT = "API_CREATE_SHORTCUT";
@@ -397,17 +395,17 @@ exports.API_GET_EMAIL = "API_GET_EMAIL";
 exports.API_GET_PHONE_NUMBER = "API_GET_PHONE_NUMBER";
 exports.API_SHOW_TOAST = "API_SHOW_TOAST";
 exports.API_SHARE = "API_SHARE";
-exports.API_HOOK = "API_HOOK";
+exports.API_HOOKS = "API_HOOKS";
 const API_OPEN_APP_RESPONSE = "API_OPEN_APP_RESPONSE";
 const API_BROADCAST_RESPONSE = "API_BROADCAST_RESPONSE";
 const API_OPEN_CHAT_RESPONSE = "API_OPEN_CHAT_RESPONSE";
+const API_SEND_MESSAGE_RESPONSE = "API_SEND_MESSAGE_RESPONSE";
 const API_GET_CLUB_RESPONSE = "API_GET_CLUB_RESPONSE";
 const API_GET_DEVICE_INFO_RESPONSE = "API_GET_DEVICE_INFO_RESPONSE";
 const API_TOGGLE_FULLSCREEN_RESPONSE = "API_TOGGLE_FULLSCREEN_RESPONSE";
 const API_OPEN_LINK_RESPONSE = "API_OPEN_LINK_RESPONSE";
 const API_CREATE_DEEP_LINK_RESPONSE = "API_CREATE_DEEP_LINK_RESPONSE";
 const API_GET_LOCATION_RESPONSE = "API_GET_LOCATION_RESPONSE";
-const API_NOTIFY_RESPONSE = "API_NOTIFY_RESPONSE";
 const API_MAKE_PAYMENT_RESPONSE = "API_MAKE_PAYMENT_RESPONSE";
 const API_GET_PROFILE_RESPONSE = "API_GET_PROFILE_RESPONSE";
 const API_CREATE_SHORTCUT_RESPONSE = "API_CREATE_SHORTCUT_RESPONSE";
@@ -415,7 +413,7 @@ const API_GET_EMAIL_RESPONSE = "API_GET_EMAIL_RESPONSE";
 const API_GET_PHONE_NUMBER_RESPONSE = "API_GET_PHONE_NUMBER_RESPONSE";
 const API_SHOW_TOAST_RESPONSE = "API_SHOW_TOAST_RESPONSE";
 const API_SHARE_RESPONSE = "API_SHARE_RESPONSE";
-const API_HOOK_RESPONSE = "API_HOOK_RESPONSE";
+const API_HOOKS_RESPONSE = "API_HOOKS_RESPONSE";
 class Requestable {
 }
 exports.Requestable = Requestable;
@@ -440,13 +438,13 @@ class RequestHandler {
                                 case API_OPEN_APP_RESPONSE:
                                 case API_BROADCAST_RESPONSE:
                                 case API_OPEN_CHAT_RESPONSE:
+                                case API_SEND_MESSAGE_RESPONSE:
                                 case API_GET_CLUB_RESPONSE:
                                 case API_GET_DEVICE_INFO_RESPONSE:
                                 case API_TOGGLE_FULLSCREEN_RESPONSE:
                                 case API_OPEN_LINK_RESPONSE:
                                 case API_CREATE_DEEP_LINK_RESPONSE:
                                 case API_GET_LOCATION_RESPONSE:
-                                case API_NOTIFY_RESPONSE:
                                 case API_MAKE_PAYMENT_RESPONSE:
                                 case API_GET_PROFILE_RESPONSE:
                                 case API_CREATE_SHORTCUT_RESPONSE:
@@ -454,7 +452,7 @@ class RequestHandler {
                                 case API_GET_PHONE_NUMBER_RESPONSE:
                                 case API_SHOW_TOAST_RESPONSE:
                                 case API_SHARE_RESPONSE:
-                                case API_HOOK_RESPONSE:
+                                case API_HOOKS_RESPONSE:
                                     if (self.listeners.get(requestable.id) !== undefined) {
                                         self.listeners.get(requestable.id).onComplete(requestable);
                                     }
@@ -482,13 +480,13 @@ class RequestHandler {
                             case API_OPEN_APP_RESPONSE:
                             case API_BROADCAST_RESPONSE:
                             case API_OPEN_CHAT_RESPONSE:
+                            case API_SEND_MESSAGE_RESPONSE:
                             case API_GET_CLUB_RESPONSE:
                             case API_GET_DEVICE_INFO_RESPONSE:
                             case API_TOGGLE_FULLSCREEN_RESPONSE:
                             case API_OPEN_LINK_RESPONSE:
                             case API_CREATE_DEEP_LINK_RESPONSE:
                             case API_GET_LOCATION_RESPONSE:
-                            case API_NOTIFY_RESPONSE:
                             case API_MAKE_PAYMENT_RESPONSE:
                             case API_GET_PROFILE_RESPONSE:
                             case API_CREATE_SHORTCUT_RESPONSE:
@@ -496,7 +494,7 @@ class RequestHandler {
                             case API_GET_PHONE_NUMBER_RESPONSE:
                             case API_SHOW_TOAST_RESPONSE:
                             case API_SHARE_RESPONSE:
-                            case API_HOOK_RESPONSE:
+                            case API_HOOKS_RESPONSE:
                                 interceptable = true;
                                 if (self.listeners.get(requestable.id) !== undefined) {
                                     self.listeners.get(requestable.id).onComplete(requestable);
@@ -905,6 +903,40 @@ class ChatroomsHandler {
             }
         });
     }
+    /**
+    * Get chatroom acess token
+    *
+    * Using this token app can send direct mesage to the user in their chatroom
+    *
+    */
+    sendMessage() {
+        return new Promise((resolve, reject) => {
+            var _a, _b;
+            try {
+                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
+                    resolve("chatroom_access_token");
+                }
+                else {
+                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
+                        id: "request_id",
+                        api: RequestHandler_1.API_SEND_MESSAGE
+                    }, {
+                        onComplete(requestable) {
+                            if (!requestable.error) {
+                                resolve(requestable.data.accessToken);
+                            }
+                            else {
+                                reject(requestable.message);
+                            }
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
 }
 exports.ChatroomsHandler = ChatroomsHandler;
 
@@ -1061,61 +1093,6 @@ exports.AppGalaxyHandler = AppGalaxyHandler;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NotificationsHandler = exports.Notifiable = void 0;
-const RequestHandler_1 = __webpack_require__(2);
-class Notifiable {
-}
-exports.Notifiable = Notifiable;
-class NotificationsHandler {
-    constructor(requestHandler) {
-        this.requestHandler = requestHandler;
-    }
-    /**
-    * Open link in browser
-    *
-    * @param notifiable - object containing notification data
-    *
-    */
-    notify(notifiable) {
-        return new Promise((resolve, reject) => {
-            var _a, _b;
-            try {
-                if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
-                    resolve();
-                }
-                else {
-                    (_b = this.requestHandler) === null || _b === void 0 ? void 0 : _b.request({
-                        id: "request_id",
-                        api: RequestHandler_1.API_NOTIFY,
-                        data: notifiable
-                    }, {
-                        onComplete(requestable) {
-                            if (!requestable.error) {
-                                resolve();
-                            }
-                            else {
-                                reject(requestable.message);
-                            }
-                        }
-                    });
-                }
-            }
-            catch (error) {
-                reject(error);
-            }
-        });
-    }
-}
-exports.NotificationsHandler = NotificationsHandler;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeviceHandler = exports.DeviceInfo = void 0;
 const RequestHandler_1 = __webpack_require__(2);
 class DeviceInfo {
@@ -1134,8 +1111,7 @@ class DeviceHandler {
             try {
                 if ((_a = this.requestHandler) === null || _a === void 0 ? void 0 : _a.debug) {
                     resolve({
-                        theme: "system",
-                        notificationAccessToken: "test_notification_access_token"
+                        theme: "system"
                     });
                 }
                 else {
@@ -1198,7 +1174,7 @@ exports.DeviceHandler = DeviceHandler;
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1256,7 +1232,7 @@ exports.LocationHandler = LocationHandler;
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

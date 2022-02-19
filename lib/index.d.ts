@@ -6,7 +6,6 @@ import { BroadcastHandler } from "./handlers/BroadcastHandler";
 import { ChatroomsHandler } from "./handlers/ChatroomsHandler";
 import { LinksHandler } from "./handlers/LinksHandler";
 import { AppGalaxyHandler } from "./handlers/AppGalaxyHandler";
-import { NotificationsHandler } from "./handlers/NotificationsHandler";
 import { DeviceHandler } from "./handlers/DeviceHandler";
 import { LocationHandler } from "./handlers/LocationHandler";
 import { ShareHandler } from "./handlers/ShareHandler";
@@ -31,7 +30,6 @@ export declare class FamenunApi {
     deviceHandler?: DeviceHandler;
     linksHandler?: LinksHandler;
     locationHandler?: LocationHandler;
-    notificationsHandler?: NotificationsHandler;
     paymentsHandler?: PaymentsHandler;
     profileHandler?: ProfileHandler;
     shareHandler?: ShareHandler;

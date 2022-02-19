@@ -14,9 +14,7 @@
     /*theme color of the app shold have all the six color digits*/
     "color": "#ff659a",
     /*for hooking data in the Famenun system like data in the feeds*/
-    "hooks": {
-        "feeds": "./hooks/feeds.js"
-    },
+    "hooks": "./feeds.js",
     /*search tags for the app*/
     "tags": ["fameun-sdk", "test-app"]
 }
